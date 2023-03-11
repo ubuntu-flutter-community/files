@@ -1,6 +1,7 @@
 import 'package:files/backend/folder_provider.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
+import 'package:files/widgets/drive_list.dart';
 import 'package:flutter/material.dart';
 
 typedef NewTabCallback = void Function(String);
@@ -53,40 +54,53 @@ class _SidePaneState extends State<SidePane> {
       width: 304,
       child: Material(
         color: Theme.of(context).colorScheme.surface,
-        child: ListView.builder(
+        child: ListView.separated(
           padding: const EdgeInsets.only(top: 56),
-          itemCount: widget.destinations.length,
-          itemBuilder: (context, index) => ContextMenu(
-            entries: [
-              ContextMenuItem(
-                child: const Text("Open"),
+          itemCount: widget.destinations.length + 1,
+          separatorBuilder: (context, index) {
+            if (index == widget.destinations.length - 1) {
+              return const Divider();
+            }
+
+            return const SizedBox();
+          },
+          itemBuilder: (context, index) {
+            if (index == widget.destinations.length) {
+              return DriveList(onDriveTap: widget.workspace.changeCurrentDir);
+            }
+
+            return ContextMenu(
+              entries: [
+                ContextMenuItem(
+                  child: const Text("Open"),
+                  onTap: () => widget.workspace
+                      .changeCurrentDir(widget.destinations[index].path),
+                ),
+                ContextMenuItem(
+                  child: const Text("Open in new tab"),
+                  onTap: () => widget.onNewTab(widget.destinations[index].path),
+                ),
+                ContextMenuItem(
+                  child: const Text("Open in new window"),
+                  onTap: () {},
+                  enabled: false,
+                ),
+              ],
+              child: ListTile(
+                dense: true,
+                leading: Icon(widget.destinations[index].icon),
+                selected: widget.workspace.currentDir ==
+                    widget.destinations[index].path,
+                selectedTileColor:
+                    Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                title: Text(
+                  widget.destinations[index].label,
+                ),
                 onTap: () => widget.workspace
                     .changeCurrentDir(widget.destinations[index].path),
               ),
-              ContextMenuItem(
-                child: const Text("Open in new tab"),
-                onTap: () => widget.onNewTab(widget.destinations[index].path),
-              ),
-              ContextMenuItem(
-                child: const Text("Open in new window"),
-                onTap: () {},
-                enabled: false,
-              ),
-            ],
-            child: ListTile(
-              dense: true,
-              leading: Icon(widget.destinations[index].icon),
-              selected: widget.workspace.currentDir ==
-                  widget.destinations[index].path,
-              selectedTileColor:
-                  Theme.of(context).colorScheme.primary.withOpacity(0.1),
-              title: Text(
-                widget.destinations[index].label,
-              ),
-              onTap: () => widget.workspace
-                  .changeCurrentDir(widget.destinations[index].path),
-            ),
-          ),
+            );
+          },
         ),
       ),
     );

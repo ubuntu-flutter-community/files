@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:files/backend/database/helper.dart';
 import 'package:files/backend/database/model.dart';
+import 'package:files/backend/drive_provider.dart';
 import 'package:files/backend/folder_provider.dart';
 import 'package:files/backend/stat_cache_proxy.dart';
 import 'package:path/path.dart' as p;
@@ -27,11 +28,17 @@ Future<void> initProviders() async {
   registerServiceInstance<FolderProvider>(folderProvider);
   registerService<EntityStatCacheHelper>(EntityStatCacheHelper.new);
   registerService<StatCacheProxy>(StatCacheProxy.new);
+  registerService<DriveProvider>(
+    DriveProvider.new,
+    dispose: (s) => s.dispose(),
+  );
 }
 
 Isar get isar => getService<Isar>();
 
 FolderProvider get folderProvider => getService<FolderProvider>();
+
+DriveProvider get driveProvider => getService<DriveProvider>();
 
 EntityStatCacheHelper get helper => getService<EntityStatCacheHelper>();
 

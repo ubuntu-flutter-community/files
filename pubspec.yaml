@@ -28,6 +28,8 @@ dependencies:
 
   recase: ^4.1.0
   ubuntu_service: ^0.2.0
+  udisks:
+    git: https://github.com/HrX03/udisks.dart
   url_launcher: any
   windows_path_provider:
     git:
