@@ -17,6 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru_widgets/yaru_widgets.dart';
 
 class FilesWorkspace extends StatefulWidget {
   final WorkspaceController controller;
@@ -242,7 +244,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SizedBox(
-          height: 48,
+          height: 56,
           child: _WorkspaceTopbar(
             controller: controller,
             popupBuilder: _getMenuEntries,
@@ -293,7 +295,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              Icons.folder_open_outlined,
+              YaruIcons.folder,
               size: 80,
             ),
             Text(
@@ -403,41 +405,34 @@ class _WorkspaceTopbar extends StatelessWidget {
       },
       leading: [
         _HistoryModifierIconButton(
-          icon: Icons.arrow_back,
+          icon: YaruIcons.go_previous,
           onPressed: controller.goToPreviousHistoryEntry,
           controller: controller,
           onHistoryOffsetChanged: controller.setHistoryOffset,
           enabled: controller.canGoToPreviousHistoryEntry,
+          type: _HistoryModifierIconButtonType.left,
         ),
         _HistoryModifierIconButton(
-          icon: Icons.arrow_forward,
+          icon: YaruIcons.go_next,
           onPressed: controller.goToNextHistoryEntry,
           controller: controller,
           onHistoryOffsetChanged: controller.setHistoryOffset,
           enabled: controller.canGoToNextHistoryEntry,
+          type: _HistoryModifierIconButtonType.right,
         ),
-        IconButton(
-          icon: const Icon(
-            Icons.arrow_upward,
-            size: 20,
-            color: Colors.white,
-          ),
+        const SizedBox(width: 8),
+        YaruOptionButton(
           onPressed: () {
             final PathParts backDir = PathParts.parse(controller.currentDir);
             controller.changeCurrentDir(
               backDir.toPath(backDir.parts.length - 1),
             );
           },
-          splashRadius: 16,
+          child: const Icon(YaruIcons.go_up, size: 20),
         ),
       ],
       actions: [
-        IconButton(
-          icon: Icon(
-            viewIcon,
-            size: 20,
-            color: Colors.white,
-          ),
+        YaruOptionButton(
           onPressed: () {
             switch (controller.view) {
               case WorkspaceView.table:
@@ -448,22 +443,22 @@ class _WorkspaceTopbar extends StatelessWidget {
                 break;
             }
           },
-          splashRadius: 16,
+          child: Icon(viewIcon),
         ),
+        if (popupBuilder != null) const SizedBox(width: 8),
         if (popupBuilder != null)
           MenuAnchor(
             menuChildren: popupBuilder!(context)
                 .map((e) => e.buildWrapper(context))
                 .toList(),
+            alignmentOffset: const Offset(-8, 8),
             builder: (context, controller, child) {
-              return IconButton(
+              return YaruOptionButton(
                 onPressed: () {
                   if (controller.isOpen) return controller.close();
                   controller.open();
                 },
-                icon: const Icon(Icons.more_vert),
-                iconSize: 20,
-                splashRadius: 16,
+                child: const Icon(YaruIcons.menu),
               );
             },
           ),
@@ -475,13 +470,15 @@ class _WorkspaceTopbar extends StatelessWidget {
   IconData get viewIcon {
     switch (controller.view) {
       case WorkspaceView.grid:
-        return Icons.grid_view_outlined;
+        return YaruIcons.app_grid;
       case WorkspaceView.table:
       default:
-        return Icons.list_outlined;
+        return YaruIcons.unordered_list;
     }
   }
 }
+
+enum _HistoryModifierIconButtonType { left, right }
 
 class _HistoryModifierIconButton extends StatelessWidget {
   final IconData icon;
@@ -489,6 +486,7 @@ class _HistoryModifierIconButton extends StatelessWidget {
   final bool enabled;
   final ValueChanged<int>? onHistoryOffsetChanged;
   final WorkspaceController controller;
+  final _HistoryModifierIconButtonType type;
 
   const _HistoryModifierIconButton({
     required this.icon,
@@ -496,6 +494,7 @@ class _HistoryModifierIconButton extends StatelessWidget {
     this.enabled = true,
     this.onHistoryOffsetChanged,
     required this.controller,
+    required this.type,
   });
 
   @override
@@ -518,10 +517,24 @@ class _HistoryModifierIconButton extends StatelessWidget {
             ),
           )
           .toList(),
-      child: IconButton(
-        icon: Icon(icon, size: 20),
+      child: YaruOptionButton(
         onPressed: enabled ? onPressed : null,
-        splashRadius: 16,
+        style: OutlinedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.horizontal(
+              left: type == _HistoryModifierIconButtonType.left
+                  ? const Radius.circular(6)
+                  : Radius.zero,
+              right: type == _HistoryModifierIconButtonType.right
+                  ? const Radius.circular(6)
+                  : Radius.zero,
+            ),
+          ),
+          backgroundColor: enabled
+              ? Theme.of(context).colorScheme.surfaceVariant
+              : Theme.of(context).colorScheme.surface,
+        ),
+        child: Icon(icon, size: 20),
       ),
     );
   }

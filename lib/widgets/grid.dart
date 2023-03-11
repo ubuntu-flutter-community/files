@@ -67,22 +67,19 @@ class _FilesGridState extends State<FilesGrid> {
             return Draggable<FileSystemEntity>(
               data: entityInfo.entity,
               dragAnchorStrategy: (_, __, ___) => const Offset(32, 32),
-              feedback: DecoratedBox(
-                decoration: BoxDecoration(
-                  color:
-                      Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
-                  borderRadius: BorderRadius.circular(4),
+              feedback: Material(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(6),
                 ),
-                child: Center(
-                  child: Cell(
-                    name: Utils.getEntityName(entityInfo.entity.path),
-                    icon: entityInfo.isDirectory
-                        ? Utils.iconForFolder(entityInfo.path)
-                        : Utils.iconForPath(entityInfo.path),
-                    iconColor: entityInfo.isDirectory
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
+                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
+                child: Icon(
+                  entityInfo.isDirectory
+                      ? Utils.iconForFolder(entityInfo.path)
+                      : Utils.iconForPath(entityInfo.path),
+                  color: entityInfo.isDirectory
+                      ? Theme.of(context).colorScheme.primary
+                      : null,
+                  size: 64,
                 ),
               ),
               child: FileCell(
@@ -133,14 +130,14 @@ class FileCell extends StatelessWidget {
         return true;
       },
       onAccept: (_) => onDropAccept?.call(entity.path),
-      builder: (context, _, __) => Container(
+      builder: (context, _, __) => Material(
         clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          color: selected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(4),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(6),
         ),
+        color: selected
+            ? Theme.of(context).colorScheme.primary.withOpacity(0.2)
+            : Colors.transparent,
         child: TimedInkwell(
           onTap: () => onTap?.call(entity),
           onDoubleTap: () {

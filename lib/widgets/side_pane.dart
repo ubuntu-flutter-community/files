@@ -3,6 +3,7 @@ import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
 import 'package:files/widgets/drive_list.dart';
 import 'package:flutter/material.dart';
+import 'package:yaru_widgets/yaru_widgets.dart';
 
 typedef NewTabCallback = void Function(String);
 
@@ -55,14 +56,16 @@ class _SidePaneState extends State<SidePane> {
       child: Material(
         color: Theme.of(context).colorScheme.surface,
         child: ListView.separated(
-          padding: const EdgeInsets.only(top: 56),
+          padding: const EdgeInsets.only(top: 16),
           itemCount: widget.destinations.length + 1,
           separatorBuilder: (context, index) {
             if (index == widget.destinations.length - 1) {
               return const Divider();
             }
 
-            return const SizedBox();
+            return SizedBox(
+              height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0,
+            );
           },
           itemBuilder: (context, index) {
             if (index == widget.destinations.length) {
@@ -86,13 +89,10 @@ class _SidePaneState extends State<SidePane> {
                   enabled: false,
                 ),
               ],
-              child: ListTile(
-                dense: true,
+              child: YaruMasterTile(
                 leading: Icon(widget.destinations[index].icon),
                 selected: widget.workspace.currentDir ==
                     widget.destinations[index].path,
-                selectedTileColor:
-                    Theme.of(context).colorScheme.primary.withOpacity(0.1),
                 title: Text(
                   widget.destinations[index].label,
                 ),

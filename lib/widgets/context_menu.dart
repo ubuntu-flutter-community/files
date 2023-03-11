@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru_widgets/yaru_widgets.dart';
 
 class ContextMenu extends StatefulWidget {
   final List<BaseContextMenuItem> entries;
@@ -93,7 +95,7 @@ class SubmenuMenuItem extends BaseContextMenuItem {
 
   @override
   Widget? buildTrailing(BuildContext context) {
-    return const Icon(Icons.chevron_right, size: 16);
+    return const Icon(YaruIcons.go_next, size: 16);
   }
 
   @override
@@ -132,7 +134,7 @@ class ContextMenuItem extends BaseContextMenuItem {
     return MenuItemButton(
       leadingIcon: leading != null
           ? IconTheme.merge(
-              data: Theme.of(context).iconTheme.copyWith(size: 16),
+              data: Theme.of(context).iconTheme.copyWith(size: 20),
               child: leading,
             )
           : null,
@@ -181,17 +183,11 @@ class RadioMenuItem<T> extends ContextMenuItem {
   Widget? buildTrailing(BuildContext context) {
     return ExcludeFocus(
       child: IgnorePointer(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: Checkbox.width,
-            maxWidth: Checkbox.width,
-          ),
-          child: Radio<T>(
-            groupValue: groupValue,
-            value: value,
-            onChanged: onChanged,
-            toggleable: toggleable,
-          ),
+        child: YaruRadio<T>(
+          groupValue: groupValue,
+          value: value,
+          onChanged: onChanged,
+          toggleable: toggleable,
         ),
       ),
     );
@@ -234,16 +230,10 @@ class CheckboxMenuItem extends ContextMenuItem {
   Widget? buildTrailing(BuildContext context) {
     return ExcludeFocus(
       child: IgnorePointer(
-        child: ConstrainedBox(
-          constraints: const BoxConstraints(
-            maxHeight: Checkbox.width,
-            maxWidth: Checkbox.width,
-          ),
-          child: Checkbox(
-            value: value,
-            onChanged: onChanged,
-            tristate: tristate,
-          ),
+        child: YaruCheckbox(
+          value: value,
+          onChanged: onChanged,
+          tristate: tristate,
         ),
       ),
     );

@@ -21,6 +21,7 @@ import 'package:files/backend/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_path_provider/windows_path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 
 class FolderProvider {
   final List<BuiltinFolder> _folders;
@@ -129,15 +130,15 @@ class SideDestination {
 }
 
 const Map<FolderType, IconData> _icons = {
-  FolderType.home: Icons.home_filled,
-  FolderType.desktop: Icons.desktop_windows,
-  FolderType.documents: Icons.note_outlined,
-  FolderType.pictures: Icons.photo_library_outlined,
-  FolderType.download: Icons.file_download,
-  FolderType.videos: Icons.videocam_outlined,
-  FolderType.music: Icons.music_note_outlined,
-  FolderType.publicShare: Icons.public_outlined,
-  FolderType.templates: Icons.file_copy_outlined,
+  FolderType.home: YaruIcons.home,
+  FolderType.desktop: YaruIcons.desktop,
+  FolderType.documents: YaruIcons.document,
+  FolderType.pictures: YaruIcons.image,
+  FolderType.download: YaruIcons.download,
+  FolderType.videos: YaruIcons.video,
+  FolderType.music: YaruIcons.music_note,
+  FolderType.publicShare: YaruIcons.globe,
+  FolderType.templates: YaruIcons.document_new,
 };
 
 String windowsFolderToString(WindowsFolder folder) {

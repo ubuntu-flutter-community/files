@@ -2,9 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:files/backend/providers.dart';
+import 'package:files/widgets/separated_flex.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:udisks/udisks.dart';
+import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru_widgets/yaru_widgets.dart';
 
 class DriveList extends StatelessWidget {
   final ValueChanged<String>? onDriveTap;
@@ -16,7 +19,10 @@ class DriveList extends StatelessWidget {
     return AnimatedBuilder(
       animation: driveProvider,
       builder: (context, _) {
-        return Column(
+        return SeparatedFlex.vertical(
+          separator: SizedBox(
+            height: YaruMasterDetailTheme.of(context).tileSpacing ?? 0,
+          ),
           children: driveProvider.blockDevices
               .where(
                 (e) =>
@@ -96,35 +102,41 @@ class _DriveTileState extends State<_DriveTile> {
         ? widget.blockDevice.hintName
         : null;
 
-    return ListTile(
-      dense: true,
-      leading: Icon(
-        widget.blockDevice.drive?.ejectable == true ? Icons.usb : Icons.storage,
-        size: 20,
-      ),
-      title: Text(
-        idLabel ?? hintName ?? "${filesize(widget.blockDevice.size, 1)} drive",
-      ),
-      subtitle: mountPoint != null ? Text(mountPoint) : null,
-      trailing: mountPoint != null
-          ? IconButton(
-              onPressed: () async {
-                await widget.blockDevice.filesystem!.unmount();
-                setState(() {});
-              },
-              icon: const Icon(Icons.eject),
-              iconSize: 16,
-              splashRadius: 16,
-            )
-          : null,
-      onTap: () async {
-        if (mountPoint == null) {
-          mountPoint = await widget.blockDevice.filesystem!.mount();
-          setState(() {});
-        }
+    return ListTileTheme.merge(
+      contentPadding: const EdgeInsets.only(left: 16, right: 8),
+      child: YaruMasterTile(
+        leading: Icon(
+          widget.blockDevice.drive?.ejectable == true
+              ? YaruIcons.usb_stick
+              : YaruIcons.drive_harddisk,
+        ),
+        title: Text(
+          idLabel ??
+              hintName ??
+              "${filesize(widget.blockDevice.size, 1)} drive",
+        ),
+        subtitle: mountPoint != null ? Text(mountPoint) : null,
+        trailing: mountPoint != null
+            ? YaruOptionButton(
+                onPressed: () async {
+                  await widget.blockDevice.filesystem!.unmount();
+                  setState(() {});
+                },
+                style: OutlinedButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.surface,
+                ),
+                child: const Icon(YaruIcons.eject),
+              )
+            : null,
+        onTap: () async {
+          if (mountPoint == null) {
+            mountPoint = await widget.blockDevice.filesystem!.mount();
+            setState(() {});
+          }
 
-        widget.onTap?.call(mountPoint!);
-      },
+          widget.onTap?.call(mountPoint!);
+        },
+      ),
     );
   }
 }

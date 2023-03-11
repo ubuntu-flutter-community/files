@@ -20,13 +20,29 @@ import 'package:files/widgets/side_pane.dart';
 import 'package:files/widgets/tab_strip.dart';
 import 'package:files/widgets/workspace.dart';
 import 'package:flutter/material.dart';
+import 'package:yaru/yaru.dart';
+import 'package:yaru_widgets/yaru_widgets.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await YaruWindowTitleBar.ensureInitialized();
+  await YaruWindow.ensureInitialized();
   await initProviders();
   await driveProvider.init();
 
   runApp(const Files());
+}
+
+ThemeData? _applyThemeValues(ThemeData? theme) {
+  return theme?.copyWith(
+    outlinedButtonTheme: OutlinedButtonThemeData(
+      style: theme.outlinedButtonTheme.style?.merge(
+        OutlinedButton.styleFrom(
+          backgroundColor: theme.colorScheme.surfaceVariant,
+        ),
+      ),
+    ),
+  );
 }
 
 class Files extends StatelessWidget {
@@ -34,45 +50,19 @@ class Files extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Files',
-      theme: ThemeData(
-        colorScheme: const ColorScheme(
-          primary: Colors.deepOrange,
-          secondary: Colors.deepOrange,
-          background: Color(0xFF161616),
-          surface: Color(0xFF212121),
-          error: Colors.red,
-          onPrimary: Colors.white,
-          onSecondary: Colors.white,
-          onBackground: Colors.white,
-          onSurface: Colors.white,
-          onError: Colors.white,
-          brightness: Brightness.dark,
-        ),
-        scrollbarTheme: ScrollbarThemeData(
-          thumbVisibility: const MaterialStatePropertyAll(true),
-          trackVisibility: MaterialStateProperty.resolveWith(
-            (states) => states.contains(MaterialState.hovered),
+    return YaruTheme(
+      builder: (context, value, child) {
+        return MaterialApp(
+          title: 'Files',
+          theme: _applyThemeValues(value.theme),
+          darkTheme: _applyThemeValues(value.darkTheme),
+          scrollBehavior: const MaterialScrollBehavior().copyWith(
+            scrollbars: false,
           ),
-          trackBorderColor: MaterialStateProperty.all(Colors.transparent),
-          crossAxisMargin: 0,
-          mainAxisMargin: 0,
-          radius: Radius.zero,
-        ),
-        menuTheme: const MenuThemeData(
-          style: MenuStyle(
-            padding: MaterialStatePropertyAll(
-              EdgeInsets.symmetric(vertical: 16),
-            ),
-          ),
-        ),
-      ),
-      scrollBehavior: const MaterialScrollBehavior().copyWith(
-        scrollbars: false,
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const FilesHome(),
+          debugShowCheckedModeBanner: false,
+          home: const FilesHome(),
+        );
+      },
     );
   }
 }
@@ -94,47 +84,81 @@ class _FilesHomeState extends State<FilesHome> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        SidePane(
-          destinations: folderProvider.destinations,
-          workspace: workspaces[currentWorkspace],
-          onNewTab: (String tabPath) {
-            workspaces.add(WorkspaceController(initialDir: tabPath));
-            currentWorkspace = workspaces.length - 1;
-            setState(() {});
-          },
-        ),
-        Expanded(
-          child: Material(
-            color: Theme.of(context).colorScheme.background,
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 56,
-                  child: TabStrip(
-                    tabs: workspaces,
-                    selectedTab: currentWorkspace,
-                    allowClosing: workspaces.length > 1,
-                    onTabChanged: (index) =>
-                        setState(() => currentWorkspace = index),
-                    onTabClosed: (index) {
-                      workspaces.removeAt(index);
-                      if (index < workspaces.length) {
-                        currentWorkspace = index;
-                      } else if (index - 1 >= 0) {
-                        currentWorkspace = index - 1;
-                      }
-                      setState(() {});
-                    },
-                    onNewTab: () {
-                      workspaces
-                          .add(WorkspaceController(initialDir: currentDir));
-                      currentWorkspace = workspaces.length - 1;
-                      setState(() {});
+    return Material(
+      color: Theme.of(context).colorScheme.background,
+      child: Column(
+        children: [
+          GestureDetector(
+            onPanStart: (details) => YaruWindow.drag(context),
+            child: SizedBox(
+              height: 56,
+              child: TabStrip(
+                tabs: workspaces,
+                selectedTab: currentWorkspace,
+                allowClosing: workspaces.length > 1,
+                onTabChanged: (index) =>
+                    setState(() => currentWorkspace = index),
+                onTabClosed: (index) {
+                  workspaces.removeAt(index);
+                  if (index < workspaces.length) {
+                    currentWorkspace = index;
+                  } else if (index - 1 >= 0) {
+                    currentWorkspace = index - 1;
+                  }
+                  setState(() {});
+                },
+                onNewTab: () {
+                  workspaces.add(WorkspaceController(initialDir: currentDir));
+                  currentWorkspace = workspaces.length - 1;
+                  setState(() {});
+                },
+                trailing: [
+                  const SizedBox(width: 16),
+                  YaruWindowControl(
+                    type: YaruWindowControlType.minimize,
+                    onTap: () => YaruWindow.minimize(context),
+                  ),
+                  const SizedBox(width: 8),
+                  StreamBuilder<YaruWindowState>(
+                    stream: YaruWindow.states(context),
+                    builder: (context, snapshot) {
+                      final bool maximized =
+                          snapshot.data?.isMaximized ?? false;
+
+                      return YaruWindowControl(
+                        type: maximized
+                            ? YaruWindowControlType.restore
+                            : YaruWindowControlType.maximize,
+                        onTap: () => maximized
+                            ? YaruWindow.restore(context)
+                            : YaruWindow.maximize(context),
+                      );
                     },
                   ),
+                  const SizedBox(width: 8),
+                  YaruWindowControl(
+                    type: YaruWindowControlType.close,
+                    onTap: () => YaruWindow.close(context),
+                  ),
+                  const SizedBox(width: 16),
+                ],
+              ),
+            ),
+          ),
+          const Divider(thickness: 1, height: 1),
+          Expanded(
+            child: Row(
+              children: [
+                SidePane(
+                  destinations: folderProvider.destinations,
+                  workspace: workspaces[currentWorkspace],
+                  onNewTab: (String tabPath) {
+                    workspaces.add(WorkspaceController(initialDir: tabPath));
+                    currentWorkspace = workspaces.length - 1;
+                    setState(() {});
+                  },
                 ),
+                const VerticalDivider(thickness: 1, width: 1),
                 Expanded(
                   child: FilesWorkspace(
                     key: ValueKey(currentWorkspace),
@@ -144,8 +168,8 @@ class _FilesHomeState extends State<FilesHome> {
               ],
             ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

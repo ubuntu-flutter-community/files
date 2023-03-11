@@ -6,6 +6,7 @@ import 'package:files/backend/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 
 class Utils {
   Utils._();
@@ -52,10 +53,10 @@ class Utils {
     final String? mime = lookupMimeType(path);
 
     if (mime != null) {
-      return iconsPerMime[mime] ?? Icons.insert_drive_file_outlined;
+      return iconsPerMime[mime] ?? YaruIcons.document_filled;
     }
 
-    return Icons.insert_drive_file_outlined;
+    return YaruIcons.document_filled;
   }
 
   static IconData iconForFolder(String path) {
@@ -64,7 +65,7 @@ class Utils {
         ? folderProvider.getIconForType(builtinFolder.type)
         : null;
 
-    return builtinFolderIcon ?? Icons.folder;
+    return builtinFolderIcon ?? YaruIcons.folder_filled;
   }
 
   static String getEntityName(String path) {

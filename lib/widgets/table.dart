@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 import 'package:recase/recase.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 
 typedef HeaderTapCallback = void Function(
   bool newAscending,
@@ -137,7 +138,7 @@ class FilesTable extends StatelessWidget {
         return const Offset(32, 32);
       },
       feedback: Material(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
         color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2),
         child: Icon(
           row.entity.isDirectory
@@ -202,7 +203,7 @@ class FilesTable extends StatelessWidget {
                       ),
                       if (columnIndex == index)
                         Icon(
-                          ascending ? Icons.arrow_downward : Icons.arrow_upward,
+                          ascending ? YaruIcons.go_down : YaruIcons.go_up,
                           size: 16,
                         ),
                     ],

@@ -65,7 +65,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
   Widget build(BuildContext context) {
     return SizedBox.expand(
       child: Material(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: SizedBox.expand(
           child: Row(
             children: [
@@ -75,9 +75,14 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Material(
-                    color: Theme.of(context).colorScheme.surface,
+                    color: Theme.of(context).colorScheme.surfaceVariant,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
+                      borderRadius: BorderRadius.circular(6),
+                      side: !focusNode.hasFocus
+                          ? BorderSide(
+                              color: Theme.of(context).colorScheme.outline,
+                            )
+                          : BorderSide.none,
                     ),
                     clipBehavior: Clip.antiAlias,
                     child: _LoadingIndicator(
@@ -110,8 +115,8 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
       return TextField(
         decoration: const InputDecoration(
           border: InputBorder.none,
-          contentPadding: EdgeInsets.symmetric(horizontal: 8),
-          isCollapsed: true,
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 13),
+          isDense: true,
         ),
         focusNode: focusNode,
         controller: controller,
@@ -150,7 +155,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
         );
       }
 
-      return ListView.separated(
+      return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
           final bool isInsideBuiltin = builtinFolder != null &&
@@ -174,7 +179,6 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
           );
         },
         itemCount: actualParts.length,
-        separatorBuilder: (context, index) => const VerticalDivider(width: 2),
       );
     }
   }
@@ -203,10 +207,10 @@ class _BreadcrumbChip extends StatelessWidget {
               children: [
                 Container(
                   alignment: Alignment.center,
-                  padding: const EdgeInsetsDirectional.only(start: 12, end: 4),
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
                   child: childOverride ?? Text(path.integralParts.last),
                 ),
-                const Icon(Icons.chevron_right, size: 16),
+                const VerticalDivider(width: 2, thickness: 2),
               ],
             ),
             onTap: () => onTap?.call(path.toPath()),
@@ -251,6 +255,13 @@ class _LoadingIndicatorState extends State<_LoadingIndicator>
   }
 
   @override
+  void dispose() {
+    fadeController.dispose();
+    progressController.dispose();
+    super.dispose();
+  }
+
+  @override
   void didUpdateWidget(covariant _LoadingIndicator old) {
     super.didUpdateWidget(old);
 
@@ -260,7 +271,7 @@ class _LoadingIndicatorState extends State<_LoadingIndicator>
   Future<void> _updateController(_LoadingIndicator old) async {
     if (widget.progress != old.progress) {
       if (widget.progress != null && old.progress == null) {
-        fadeController.forward();
+        fadeController.value = 1;
         progressController.animateTo(widget.progress!);
       } else if (widget.progress == null && old.progress != null) {
         await fadeController.reverse();
@@ -280,55 +291,27 @@ class _LoadingIndicatorState extends State<_LoadingIndicator>
     return AnimatedBuilder(
       animation: Listenable.merge([progressController, fadeController]),
       builder: (context, child) {
-        return CustomPaint(
-          painter: _LoadingIndicatorPainter(
-            progress: progressController.value,
-            opacity: fadeController.value,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          child: child,
+        return Stack(
+          children: [
+            child!,
+            Positioned.directional(
+              textDirection: Directionality.of(context),
+              top: 12,
+              bottom: 12,
+              end: 12,
+              width: 16,
+              child: FadeTransition(
+                opacity: fadeController,
+                child: CircularProgressIndicator(
+                  value: progressController.value,
+                  strokeWidth: 2,
+                ),
+              ),
+            ),
+          ],
         );
       },
       child: widget.child,
     );
-  }
-}
-
-class _LoadingIndicatorPainter extends CustomPainter {
-  final double progress;
-  final double opacity;
-  final Color color;
-
-  const _LoadingIndicatorPainter({
-    required this.progress,
-    required this.opacity,
-    required this.color,
-  });
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final Rect baseRect = Offset.zero & size;
-    final Rect drawingRect = Offset.zero &
-        Size(
-          size.width * progress,
-          size.height,
-        );
-
-    canvas.drawRect(
-      baseRect,
-      Paint()..color = color.withOpacity(opacity * 0.2),
-    );
-
-    canvas.drawRect(
-      drawingRect,
-      Paint()..color = color.withOpacity(opacity * 0.6),
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant _LoadingIndicatorPainter old) {
-    return progress != old.progress ||
-        opacity != old.opacity ||
-        color.value != old.color.value;
   }
 }

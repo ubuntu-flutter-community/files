@@ -1,6 +1,7 @@
 import 'package:files/widgets/context_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:yaru_icons/yaru_icons.dart';
 
 class EntityContextMenu extends StatelessWidget {
   final Widget child;
@@ -36,21 +37,21 @@ class EntityContextMenu extends StatelessWidget {
         ),
         const ContextMenuDivider(),
         ContextMenuItem(
-          leading: const Icon(Icons.file_copy_outlined),
+          leading: const Icon(YaruIcons.copy),
           child: const Text("Copy file"),
           onTap: onCopy,
           shortcut:
               const SingleActivator(LogicalKeyboardKey.keyC, control: true),
         ),
         ContextMenuItem(
-          leading: const Icon(Icons.cut_outlined),
+          leading: const Icon(YaruIcons.cut),
           child: const Text("Cut file"),
           onTap: onCut,
           shortcut:
               const SingleActivator(LogicalKeyboardKey.keyX, control: true),
         ),
         ContextMenuItem(
-          leading: const Icon(Icons.paste_outlined),
+          leading: const Icon(YaruIcons.paste),
           child: const Text("Paste file"),
           onTap: onPaste,
           shortcut:
