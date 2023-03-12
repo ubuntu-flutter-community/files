@@ -30,11 +30,6 @@ class TabStrip extends StatelessWidget {
     return SizedBox.expand(
       child: Row(
         children: [
-          const SizedBox(width: 8),
-          YaruOptionButton(
-            onPressed: onNewTab,
-            child: const Icon(YaruIcons.plus),
-          ),
           Expanded(
             child: ListView.separated(
               itemBuilder: (context, index) => ContextMenu(
@@ -64,6 +59,12 @@ class TabStrip extends StatelessWidget {
               padding: const EdgeInsets.all(8),
             ),
           ),
+          const SizedBox(width: 8),
+          YaruOptionButton(
+            onPressed: onNewTab,
+            child: const Icon(YaruIcons.plus),
+          ),
+          const SizedBox(width: 8),
           if (trailing.isNotEmpty)
             const VerticalDivider(
               indent: 12,

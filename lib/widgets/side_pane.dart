@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:files/backend/folder_provider.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
@@ -85,8 +87,12 @@ class _SidePaneState extends State<SidePane> {
                 ),
                 ContextMenuItem(
                   child: const Text("Open in new window"),
-                  onTap: () {},
-                  enabled: false,
+                  onTap: () async {
+                    await Process.start(
+                      Platform.resolvedExecutable,
+                      [widget.destinations[index].path],
+                    );
+                  },
                 ),
               ],
               child: YaruMasterTile(

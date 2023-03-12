@@ -23,14 +23,16 @@ import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
 import 'package:yaru_widgets/yaru_widgets.dart';
 
-Future<void> main() async {
+Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await YaruWindowTitleBar.ensureInitialized();
   await YaruWindow.ensureInitialized();
   await initProviders();
   await driveProvider.init();
 
-  runApp(const Files());
+  final String? initialDir = args.isNotEmpty ? args.first : null;
+
+  runApp(Files(initialDir: initialDir));
 }
 
 ThemeData? _applyThemeValues(ThemeData? theme) {
@@ -46,7 +48,9 @@ ThemeData? _applyThemeValues(ThemeData? theme) {
 }
 
 class Files extends StatelessWidget {
-  const Files({super.key});
+  final String? initialDir;
+
+  const Files({this.initialDir, super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +64,7 @@ class Files extends StatelessWidget {
             scrollbars: false,
           ),
           debugShowCheckedModeBanner: false,
-          home: const FilesHome(),
+          home: FilesHome(initialDir: initialDir),
         );
       },
     );
@@ -68,7 +72,9 @@ class Files extends StatelessWidget {
 }
 
 class FilesHome extends StatefulWidget {
-  const FilesHome({super.key});
+  final String? initialDir;
+
+  const FilesHome({this.initialDir, super.key});
 
   @override
   _FilesHomeState createState() => _FilesHomeState();
@@ -76,7 +82,9 @@ class FilesHome extends StatefulWidget {
 
 class _FilesHomeState extends State<FilesHome> {
   late final List<WorkspaceController> workspaces = [
-    WorkspaceController(initialDir: folderProvider.destinations.first.path),
+    WorkspaceController(
+      initialDir: widget.initialDir ?? folderProvider.destinations.first.path,
+    ),
   ];
   int currentWorkspace = 0;
 
@@ -90,6 +98,7 @@ class _FilesHomeState extends State<FilesHome> {
         children: [
           GestureDetector(
             onPanStart: (details) => YaruWindow.drag(context),
+            onSecondaryTap: () => YaruWindow.showMenu(context),
             child: SizedBox(
               height: 56,
               child: TabStrip(
