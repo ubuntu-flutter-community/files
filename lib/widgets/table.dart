@@ -10,8 +10,12 @@ import 'package:files/widgets/timed_inkwell.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:pasteboard/pasteboard.dart';
 import 'package:path/path.dart' as p;
 import 'package:recase/recase.dart';
+// ignore: implementation_imports
+import 'package:super_clipboard/src/format_conversions.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 import 'package:yaru_icons/yaru_icons.dart';
 
 typedef HeaderTapCallback = void Function(
@@ -339,6 +343,22 @@ class _FilesRowState extends State<_FilesRow> {
                       widget.row.onTap?.call();
                       widget.row.onDoubleTap?.call();
                     },
+                    onCopy: () async {
+                      /* final data = await ClipboardReader.readClipboard();
+                      final pogData = await data.readValue(linuxFileUri);
+                      print(pogData); */
+                      await Pasteboard.writeFiles([widget.row.entity.path]);
+
+                      /* final writer = ClipboardWriter.instance;
+                      final item = DataWriterItem();
+
+                      item.add(
+                        linuxFileUri(Uri.file(widget.row.entity.path)),
+                      );
+
+                      await writer.write([item]);
+                      print("Wrote"); */
+                    },
                     child: Padding(
                       padding: EdgeInsets.symmetric(
                         horizontal: widget.horizontalPadding,
@@ -416,3 +436,52 @@ class _FilesRowState extends State<_FilesRow> {
     );
   }
 }
+
+final linuxFileUri = SimpleValueFormat(
+  android: Formats.fileUri.android,
+  ios: Formats.fileUri.ios,
+  linux: const SimplePlatformCodec(
+    formats: [
+      'text/plain;charset=utf-8',
+      'text/uri-list',
+      'application/vnd.portal.files',
+      'application/vnd.portal.filetransfer',
+      'x-special/gnome-copied-files',
+      'UTF8_STRING',
+      'TARGETS',
+      'TIMESTAMP',
+      'text/plain',
+      'application/octet-stream;extension=',
+    ],
+    decodingFormats: [
+      'text/plain;charset=utf-8',
+      'text/uri-list',
+      'application/vnd.portal.files',
+      'application/vnd.portal.filetransfer',
+      'x-special/gnome-copied-files',
+      'UTF8_STRING',
+      'TARGETS',
+      'TIMESTAMP',
+      'text/plain',
+      'application/octet-stream;extension=',
+    ],
+    encodingFormats: [
+      'text/plain;charset=utf-8',
+      'text/uri-list',
+      'application/vnd.portal.files',
+      'application/vnd.portal.filetransfer',
+      'x-special/gnome-copied-files',
+      'UTF8_STRING',
+      'TARGETS',
+      'TIMESTAMP',
+      'text/plain',
+      'application/octet-stream;extension=',
+    ],
+    onDecode: fileUriFromString,
+    onEncode: fileUriToString,
+  ),
+  macos: Formats.fileUri.macos,
+  windows: Formats.fileUri.windows,
+  web: Formats.fileUri.web,
+  fallback: Formats.fileUri.fallback,
+);

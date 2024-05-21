@@ -23,11 +23,13 @@ dependencies:
   material_design_icons_flutter: ^6.0.7096 
   mime: ^1.0.0
 
+  pasteboard: ^0.2.0
   path: ^1.8.2
   path_provider: ^2.0.2
   provider: ^6.0.0
 
   recase: ^4.1.0
+  super_clipboard: ^0.2.3
   ubuntu_service: ^0.2.0
   udisks:
     git: https://github.com/HrX03/udisks.dart

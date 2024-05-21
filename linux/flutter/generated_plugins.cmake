@@ -5,8 +5,11 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   gtk
   handy_window
+  irondash_engine_context
   isar_flutter_libs
+  pasteboard
   screen_retriever
+  super_native_extensions
   url_launcher_linux
   window_manager
   yaru_window_linux
