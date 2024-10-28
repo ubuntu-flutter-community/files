@@ -16,7 +16,7 @@ import 'package:recase/recase.dart';
 // ignore: implementation_imports
 import 'package:super_clipboard/src/format_conversions.dart';
 import 'package:super_clipboard/super_clipboard.dart';
-import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru/yaru.dart';
 
 typedef HeaderTapCallback = void Function(
   bool newAscending,
@@ -104,7 +104,7 @@ class FilesTable extends StatelessWidget {
     return SizedBox(
       height: 32,
       child: Material(
-        color: Theme.of(context).colorScheme.background,
+        color: Theme.of(context).colorScheme.surface,
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -116,7 +116,7 @@ class FilesTable extends StatelessWidget {
             ),
             Container(
               width: rowHorizontalPadding,
-              color: Theme.of(context).colorScheme.background,
+              color: Theme.of(context).colorScheme.surface,
             ),
           ],
         ),
@@ -311,14 +311,15 @@ class _FilesRowState extends State<_FilesRow> {
   @override
   Widget build(BuildContext context) {
     return DragTarget<FileSystemEntity>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         if (!widget.row.entity.isDirectory) return false;
 
-        if (data!.path == widget.row.entity.path) return false;
+        if (details.data.path == widget.row.entity.path) return false;
 
         return true;
       },
-      onAccept: (data) => Utils.moveFileToDest(data, widget.row.entity.path),
+      onAcceptWithDetails: (details) =>
+          Utils.moveFileToDest(details.data, widget.row.entity.path),
       builder: (context, candidateData, rejectedData) {
         return LayoutBuilder(
           builder: (context, constraints) {
@@ -403,13 +404,11 @@ class _FilesRowState extends State<_FilesRow> {
             ),
           ],
         );
-        break;
       case FilesColumnType.date:
         child = Text(
           DateFormat("HH:mm - d MMM yyyy").format(entity.stat.modified),
           overflow: TextOverflow.ellipsis,
         );
-        break;
       case FilesColumnType.type:
         final String fileExtension =
             p.extension(entity.path).replaceAll(".", "").toUpperCase();
@@ -419,13 +418,11 @@ class _FilesRowState extends State<_FilesRow> {
           entity.isDirectory ? "Directory" : fileLabel,
           overflow: TextOverflow.ellipsis,
         );
-        break;
       case FilesColumnType.size:
         child = Text(
           entity.isDirectory ? "" : filesize(entity.stat.size),
           overflow: TextOverflow.ellipsis,
         );
-        break;
     }
 
     return Container(

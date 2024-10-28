@@ -41,7 +41,7 @@ class EntityInfo {
   }
 
   @override
-  bool operator ==(Object? other) {
+  bool operator ==(Object other) {
     if (other is EntityInfo) {
       return _equals(other);
     }

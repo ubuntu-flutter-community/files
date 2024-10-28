@@ -17,8 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class FilesWorkspace extends StatefulWidget {
   final WorkspaceController controller;
@@ -139,6 +138,8 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   void _onEntityTap(EntityInfo entity) {
     final bool selected = controller.selectedItems.contains(entity);
     final Set<LogicalKeyboardKey> keysPressed =
+        // TODO: remove ignore
+        // ignore: deprecated_member_use
         RawKeyboard.instance.keysPressed;
     final bool multiSelect = keysPressed.contains(
           LogicalKeyboardKey.controlLeft,
@@ -265,7 +266,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
         SizedBox(
           height: 32,
           child: Material(
-            color: Theme.of(context).colorScheme.background,
+            color: Theme.of(context).colorScheme.surface,
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
@@ -301,7 +302,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
             Text(
               "This Folder is Empty",
               style: TextStyle(fontSize: 17),
-            )
+            ),
           ],
         ),
       );
@@ -437,10 +438,8 @@ class _WorkspaceTopbar extends StatelessWidget {
             switch (controller.view) {
               case WorkspaceView.table:
                 onWorkspaceViewChanged?.call(WorkspaceView.grid);
-                break;
               case WorkspaceView.grid:
                 onWorkspaceViewChanged?.call(WorkspaceView.table);
-                break;
             }
           },
           child: Icon(viewIcon),
@@ -531,7 +530,7 @@ class _HistoryModifierIconButton extends StatelessWidget {
             ),
           ),
           backgroundColor: enabled
-              ? Theme.of(context).colorScheme.surfaceVariant
+              ? Theme.of(context).colorScheme.surfaceContainerHighest
               : Theme.of(context).colorScheme.surface,
         ),
         child: Icon(icon, size: 20),

@@ -136,10 +136,8 @@ class ScrollProxy extends StatelessWidget {
         switch (direction) {
           case Axis.vertical:
             provider = VerticalScrollReceiver.of(context);
-            break;
           case Axis.horizontal:
             provider = HorizontalScrollReceiver.of(context);
-            break;
         }
 
         provider.notify(notification);

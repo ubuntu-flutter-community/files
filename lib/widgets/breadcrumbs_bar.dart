@@ -75,7 +75,8 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
                 child: Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: Material(
-                    color: Theme.of(context).colorScheme.surfaceVariant,
+                    color:
+                        Theme.of(context).colorScheme.surfaceContainerHighest,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(6),
                       side: !focusNode.hasFocus
@@ -200,7 +201,8 @@ class _BreadcrumbChip extends StatelessWidget {
     return SizedBox(
       height: double.infinity,
       child: DragTarget<FileSystemEntity>(
-        onAccept: (data) => Utils.moveFileToDest(data, path.toPath()),
+        onAcceptWithDetails: (details) =>
+            Utils.moveFileToDest(details.data, path.toPath()),
         builder: (context, candidateData, rejectedData) {
           return InkWell(
             child: Row(

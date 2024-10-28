@@ -2,8 +2,7 @@ import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class TabStrip extends StatelessWidget {
   final List<WorkspaceController> tabs;
@@ -122,7 +121,7 @@ class _TabState extends State<_Tab> {
       height: double.infinity,
       child: Material(
         color: widget.selected
-            ? Theme.of(context).colorScheme.surfaceVariant
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
             : Theme.of(context).colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6),

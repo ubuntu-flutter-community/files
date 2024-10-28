@@ -21,7 +21,6 @@ import 'package:files/widgets/tab_strip.dart';
 import 'package:files/widgets/workspace.dart';
 import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
 
 Future<void> main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -40,7 +39,7 @@ ThemeData? _applyThemeValues(ThemeData? theme) {
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: theme.outlinedButtonTheme.style?.merge(
         OutlinedButton.styleFrom(
-          backgroundColor: theme.colorScheme.surfaceVariant,
+          backgroundColor: theme.colorScheme.surfaceContainerHighest,
         ),
       ),
     ),
@@ -93,7 +92,7 @@ class _FilesHomeState extends State<FilesHome> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       child: Column(
         children: [
           GestureDetector(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class ContextMenu extends StatefulWidget {
   final List<BaseContextMenuItem> entries;
@@ -105,7 +104,7 @@ class SubmenuMenuItem extends BaseContextMenuItem {
       leadingIcon: buildLeading(context),
       trailingIcon: buildTrailing(context),
       style: const ButtonStyle(
-        padding: MaterialStatePropertyAll(
+        padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
@@ -142,7 +141,7 @@ class ContextMenuItem extends BaseContextMenuItem {
       onPressed: onTap,
       shortcut: shortcut,
       style: const ButtonStyle(
-        padding: MaterialStatePropertyAll(
+        padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
@@ -216,13 +215,10 @@ class CheckboxMenuItem extends ContextMenuItem {
           switch (value) {
             case false:
               onChanged!.call(true);
-              break;
             case true:
               onChanged!.call(tristate ? null : false);
-              break;
             case null:
               onChanged!.call(false);
-              break;
           }
         };
 

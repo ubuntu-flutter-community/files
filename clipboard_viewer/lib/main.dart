@@ -47,6 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
         itemCount: items.length,
         itemBuilder: (context, index) {
           final item = items[index];
+          // TODO(@HrX03) is this needed?
+          // ignore: unused_local_variable
           final rawReader = item.$1.rawReader;
 
           return ListTile(
@@ -60,6 +62,8 @@ class _MyHomePageState extends State<MyHomePage> {
         onPressed: () async {
           await Pasteboard.writeFiles(["/home/davide"]);
           return;
+          // TODO(@HrX03) is this needed?
+          // ignore: unused_local_variable, dead_code
           final data = await ClipboardReader.readClipboard();
           final value = await data.readValue(linuxFileUri);
 

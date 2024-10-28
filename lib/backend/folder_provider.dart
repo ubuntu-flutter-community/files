@@ -21,7 +21,7 @@ import 'package:files/backend/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:windows_path_provider/windows_path_provider.dart';
 import 'package:xdg_directories/xdg_directories.dart';
-import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru/yaru.dart';
 
 class FolderProvider {
   final List<BuiltinFolder> _folders;

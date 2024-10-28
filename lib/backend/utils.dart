@@ -6,7 +6,7 @@ import 'package:files/backend/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:mime/mime.dart';
-import 'package:yaru_icons/yaru_icons.dart';
+import 'package:yaru/yaru.dart';
 
 class Utils {
   Utils._();

@@ -122,14 +122,14 @@ class FileCell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DragTarget<FileSystemEntity>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         if (!entity.isDirectory) return false;
 
-        if (data!.path == entity.path) return false;
+        if (details.data.path == entity.path) return false;
 
         return true;
       },
-      onAccept: (_) => onDropAccept?.call(entity.path),
+      onAcceptWithDetails: (_) => onDropAccept?.call(entity.path),
       builder: (context, _, __) => Material(
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(

@@ -6,8 +6,7 @@ import 'package:files/widgets/separated_flex.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
 import 'package:udisks/udisks.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class DriveList extends StatelessWidget {
   final ValueChanged<String>? onDriveTap;
