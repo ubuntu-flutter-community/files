@@ -18,6 +18,6 @@ class EntityStatCacheHelper {
     return stat;
   }
 
-  Future<void> set(EntityStat entity) async =>
-      await isar.writeTxn(() => isar.entityStats.put(entity));
+  Future<void> set(EntityStat entity) =>
+      isar.writeTxn(() => isar.entityStats.put(entity));
 }
