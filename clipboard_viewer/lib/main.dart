@@ -64,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
           await Pasteboard.writeFiles(['/home/davide']);
           return;
           // TODO(@HrX03) is this needed?
-          // ignore: unused_local_variable, dead_code
+          // ignore: unused_local_variable, dead_code, deprecated_member_use
           final data = await ClipboardReader.readClipboard();
           final value = await data.readValue(linuxFileUri);
 
