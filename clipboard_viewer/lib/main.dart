@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pasteboard/pasteboard.dart';
-import 'package:super_clipboard/super_clipboard.dart';
 // ignore: implementation_imports
 import 'package:super_clipboard/src/format_conversions.dart';
+import 'package:super_clipboard/super_clipboard.dart';
 
 void main() {
   runApp(const MyApp());
@@ -54,13 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
           return ListTile(
             title: SelectableText(item.$2.toString()),
             subtitle: SelectableText(
-                item.$1.platformFormats.map((e) => "'$e'").join(", ")),
+              item.$1.platformFormats.map((e) => "'$e'").join(', '),
+            ),
           );
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          await Pasteboard.writeFiles(["/home/davide"]);
+          await Pasteboard.writeFiles(['/home/davide']);
           return;
           // TODO(@HrX03) is this needed?
           // ignore: unused_local_variable, dead_code
