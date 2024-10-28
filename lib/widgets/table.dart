@@ -171,7 +171,7 @@ class FilesTable extends StatelessWidget {
     return InkWell(
       onTap: column.allowSorting
           ? () {
-              var newAscending = ascending;
+              bool newAscending = ascending;
               if (columnIndex == index) {
                 newAscending = !newAscending;
               }

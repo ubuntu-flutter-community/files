@@ -14,6 +14,15 @@ enum SortType {
 }
 
 class CancelableFsFetch {
+  final Directory directory;
+  final ValueChanged<List<EntityInfo>?> onFetched;
+  final VoidCallback? onCancel;
+  final ValueChanged<double?>? onProgressChange;
+  final ValueChanged<OSError?>? onFileSystemException;
+  final bool ascending;
+  final SortType sortType;
+  final bool showHidden;
+
   CancelableFsFetch({
     required this.directory,
     required this.onFetched,
@@ -24,14 +33,6 @@ class CancelableFsFetch {
     this.sortType = SortType.name,
     this.showHidden = false,
   });
-  final Directory directory;
-  final ValueChanged<List<EntityInfo>?> onFetched;
-  final VoidCallback? onCancel;
-  final ValueChanged<double?>? onProgressChange;
-  final ValueChanged<OSError?>? onFileSystemException;
-  final bool ascending;
-  final SortType sortType;
-  final bool showHidden;
 
   bool _running = false;
   Completer<void> cancelableCompleter = Completer<void>();

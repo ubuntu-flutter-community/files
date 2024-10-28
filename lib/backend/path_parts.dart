@@ -1,6 +1,10 @@
 class PathParts {
   const PathParts(this.root, this.parts, this.separator);
 
+  final String root;
+  final List<String> parts;
+  final String separator;
+
   factory PathParts.parse(String path) {
     late final String root;
     late final String separator;
@@ -25,9 +29,6 @@ class PathParts {
 
     return PathParts(root, parts, separator);
   }
-  final String root;
-  final List<String> parts;
-  final String separator;
 
   String toPath([int? numOfParts]) {
     final resolvedNumOfParts = numOfParts ?? parts.length;

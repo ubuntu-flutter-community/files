@@ -17,7 +17,9 @@ limitations under the License.
 import 'dart:io';
 
 import 'package:files/backend/database/model.dart';
+import 'package:flutter/foundation.dart';
 
+@immutable
 class EntityInfo {
   const EntityInfo._(this._entity, this.stat, this.entityType);
   final FileSystemEntity _entity;
@@ -40,8 +42,6 @@ class EntityInfo {
   }
 
   @override
-  // TODO(@HrX03): is this correct?
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     if (other is EntityInfo) {
       return _equals(other);
@@ -50,8 +50,6 @@ class EntityInfo {
   }
 
   @override
-  // TODO(@HrX03): is this correct?
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   int get hashCode => Object.hash(
         entity.path,
         stat.accessed,
