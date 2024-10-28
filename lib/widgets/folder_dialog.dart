@@ -16,11 +16,11 @@ class _FolderDialogState extends State<FolderDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text("New Folder"),
+      title: const Text('New Folder'),
       content: TextField(
         autofocus: true,
         decoration: const InputDecoration(
-          hintText: "Folder name",
+          hintText: 'Folder name',
         ),
         controller: controller,
         onSubmitted: (value) {
@@ -29,7 +29,7 @@ class _FolderDialogState extends State<FolderDialog> {
       ),
       actions: [
         TextButton(
-          child: const Text("Cancel"),
+          child: const Text('Cancel'),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -41,7 +41,7 @@ class _FolderDialogState extends State<FolderDialog> {
                 value.text.isNotEmpty && folderValidator.hasMatch(value.text)
                     ? () => Navigator.of(context).pop(controller.text)
                     : null,
-            child: const Text("Create"),
+            child: const Text('Create'),
           ),
         ),
       ],

@@ -24,6 +24,7 @@ import 'package:xdg_directories/xdg_directories.dart';
 import 'package:yaru/yaru.dart';
 
 class FolderProvider {
+  const FolderProvider._(this._folders, this._destinations);
   final List<BuiltinFolder> _folders;
   final List<SideDestination> _destinations;
 
@@ -31,23 +32,23 @@ class FolderProvider {
   List<SideDestination> get destinations => List.from(_destinations);
 
   static Future<FolderProvider> init() async {
-    final List<BuiltinFolder> folders = [];
+    final folders = <BuiltinFolder>[];
 
     if (Platform.isWindows) {
-      for (final WindowsFolder folder in WindowsFolder.values) {
-        final String? path = await WindowsPathProvider.getPath(folder);
+      for (final folder in WindowsFolder.values) {
+        final path = await WindowsPathProvider.getPath(folder);
 
         if (path == null) continue;
 
-        final FolderType? type = folder.toFolderType();
+        final type = folder.toFolderType();
         if (type == null) continue;
 
         folders.add(BuiltinFolder(type, Directory(path)));
       }
     } else if (Platform.isLinux) {
-      final Set<String> dirNames = getUserDirectoryNames();
+      final dirNames = getUserDirectoryNames();
 
-      final List<String> backDir = getUserDirectory(dirNames.first)!
+      final backDir = getUserDirectory(dirNames.first)!
           .path
           .split(Platform.pathSeparator)
         ..removeLast();
@@ -58,8 +59,8 @@ class FolderProvider {
         ),
       );
 
-      for (final String element in dirNames) {
-        final FolderType? type = FolderType.fromString(element);
+      for (final element in dirNames) {
+        final type = FolderType.fromString(element);
         if (type == null) continue;
 
         folders.add(
@@ -70,10 +71,10 @@ class FolderProvider {
         );
       }
     } else {
-      throw Exception("Platform not supported");
+      throw Exception('Platform not supported');
     }
 
-    final List<SideDestination> destinations = [
+    final destinations = <SideDestination>[
       for (final BuiltinFolder element in folders)
         SideDestination(
           _icons[element.type]!,
@@ -84,8 +85,6 @@ class FolderProvider {
 
     return FolderProvider._(folders, destinations);
   }
-
-  const FolderProvider._(this._folders, this._destinations);
 
   IconData getIconForType(FolderType type) {
     return _icons[type]!;
@@ -115,18 +114,16 @@ enum FolderType {
 }
 
 class BuiltinFolder {
+  const BuiltinFolder(this.type, this.directory);
   final FolderType type;
   final Directory directory;
-
-  const BuiltinFolder(this.type, this.directory);
 }
 
 class SideDestination {
+  const SideDestination(this.icon, this.label, this.path);
   final IconData icon;
   final String label;
   final String path;
-
-  const SideDestination(this.icon, this.label, this.path);
 }
 
 const Map<FolderType, IconData> _icons = {
@@ -144,23 +141,23 @@ const Map<FolderType, IconData> _icons = {
 String windowsFolderToString(WindowsFolder folder) {
   switch (folder) {
     case WindowsFolder.profile:
-      return "HOME";
+      return 'HOME';
     case WindowsFolder.desktop:
-      return "DESKTOP";
+      return 'DESKTOP';
     case WindowsFolder.documents:
-      return "DOCUMENTS";
+      return 'DOCUMENTS';
     case WindowsFolder.pictures:
-      return "PICTURES";
+      return 'PICTURES';
     case WindowsFolder.downloads:
-      return "DOWNLOAD";
+      return 'DOWNLOAD';
     case WindowsFolder.videos:
-      return "VIDEOS";
+      return 'VIDEOS';
     case WindowsFolder.music:
-      return "MUSIC";
+      return 'MUSIC';
     case WindowsFolder.public:
-      return "PUBLICSHARE";
+      return 'PUBLICSHARE';
     case WindowsFolder.templates:
-      return "TEMPLATES";
+      return 'TEMPLATES';
   }
 }
 

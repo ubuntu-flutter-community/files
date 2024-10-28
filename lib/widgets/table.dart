@@ -29,17 +29,6 @@ typedef HeaderResizeCallback = void Function(
 );
 
 class FilesTable extends StatelessWidget {
-  final List<FilesRow> rows;
-  final List<FilesColumn> columns;
-  final double rowHeight;
-  final double rowHorizontalPadding;
-  final bool ascending;
-  final int columnIndex;
-  final HeaderTapCallback? onHeaderCellTap;
-  final HeaderResizeCallback? onHeaderResize;
-  final ScrollController horizontalController;
-  final ScrollController verticalController;
-
   const FilesTable({
     required this.rows,
     required this.columns,
@@ -53,15 +42,25 @@ class FilesTable extends StatelessWidget {
     required this.verticalController,
     super.key,
   });
+  final List<FilesRow> rows;
+  final List<FilesColumn> columns;
+  final double rowHeight;
+  final double rowHorizontalPadding;
+  final bool ascending;
+  final int columnIndex;
+  final HeaderTapCallback? onHeaderCellTap;
+  final HeaderResizeCallback? onHeaderResize;
+  final ScrollController horizontalController;
+  final ScrollController verticalController;
 
   @override
   Widget build(BuildContext context) {
-    final WorkspaceController controller = WorkspaceController.of(context);
+    final controller = WorkspaceController.of(context);
 
     return LayoutBuilder(
       builder: (context, constraints) {
         return GestureDetector(
-          onTap: () => controller.clearSelectedItems(),
+          onTap: controller.clearSelectedItems,
           child: DoubleScrollbars(
             horizontalController: horizontalController,
             verticalController: verticalController,
@@ -167,12 +166,12 @@ class FilesTable extends StatelessWidget {
   }
 
   Widget _buildHeaderCell(FilesColumn column, int index) {
-    final double startPadding = index == 0 ? rowHorizontalPadding : 0;
+    final startPadding = index == 0 ? rowHorizontalPadding : 0;
 
     return InkWell(
       onTap: column.allowSorting
           ? () {
-              bool newAscending = ascending;
+              var newAscending = ascending;
               if (columnIndex == index) {
                 newAscending = !newAscending;
               }
@@ -184,7 +183,7 @@ class FilesTable extends StatelessWidget {
         width: column.normalizedWidth + startPadding,
         constraints: BoxConstraints(minWidth: startPadding + 80),
         padding: EdgeInsetsDirectional.only(
-          start: startPadding,
+          start: startPadding.toDouble(),
         ),
         child: Stack(
           clipBehavior: Clip.none,
@@ -240,17 +239,16 @@ class FilesTable extends StatelessWidget {
 }
 
 class FilesColumn {
-  final double width;
-  final FilesColumnType type;
-  final bool allowSorting;
-
-  double get normalizedWidth => width.clamp(80, double.infinity);
-
   const FilesColumn({
     required this.width,
     required this.type,
     this.allowSorting = true,
   });
+  final double width;
+  final FilesColumnType type;
+  final bool allowSorting;
+
+  double get normalizedWidth => width.clamp(80, double.infinity);
 }
 
 enum FilesColumnType {
@@ -263,13 +261,6 @@ enum FilesColumnType {
 }
 
 class FilesRow {
-  final EntityInfo entity;
-  final bool selected;
-  final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongTap;
-  final VoidCallback? onSecondaryTap;
-
   const FilesRow({
     required this.entity,
     this.selected = false,
@@ -278,20 +269,25 @@ class FilesRow {
     this.onLongTap,
     this.onSecondaryTap,
   });
+  final EntityInfo entity;
+  final bool selected;
+  final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongTap;
+  final VoidCallback? onSecondaryTap;
 }
 
 class _FilesRow extends StatefulWidget {
-  final FilesRow row;
-  final List<FilesColumn> columns;
-  final Size size;
-  final double horizontalPadding;
-
   const _FilesRow({
     required this.row,
     required this.columns,
     required this.size,
     required this.horizontalPadding,
   });
+  final FilesRow row;
+  final List<FilesColumn> columns;
+  final Size size;
+  final double horizontalPadding;
 
   @override
   _FilesRowState createState() => _FilesRowState();
@@ -406,21 +402,21 @@ class _FilesRowState extends State<_FilesRow> {
         );
       case FilesColumnType.date:
         child = Text(
-          DateFormat("HH:mm - d MMM yyyy").format(entity.stat.modified),
+          DateFormat('HH:mm - d MMM yyyy').format(entity.stat.modified),
           overflow: TextOverflow.ellipsis,
         );
       case FilesColumnType.type:
-        final String fileExtension =
-            p.extension(entity.path).replaceAll(".", "").toUpperCase();
-        final String fileLabel =
-            fileExtension.isNotEmpty ? "File ($fileExtension)" : "File";
+        final fileExtension =
+            p.extension(entity.path).replaceAll('.', '').toUpperCase();
+        final fileLabel =
+            fileExtension.isNotEmpty ? 'File ($fileExtension)' : 'File';
         child = Text(
-          entity.isDirectory ? "Directory" : fileLabel,
+          entity.isDirectory ? 'Directory' : fileLabel,
           overflow: TextOverflow.ellipsis,
         );
       case FilesColumnType.size:
         child = Text(
-          entity.isDirectory ? "" : filesize(entity.stat.size),
+          entity.isDirectory ? '' : filesize(entity.stat.size),
           overflow: TextOverflow.ellipsis,
         );
     }

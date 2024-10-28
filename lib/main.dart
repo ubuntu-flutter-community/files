@@ -29,7 +29,7 @@ Future<void> main(List<String> args) async {
   await initProviders();
   await driveProvider.init();
 
-  final String? initialDir = args.isNotEmpty ? args.first : null;
+  final initialDir = args.isNotEmpty ? args.first : null;
 
   runApp(Files(initialDir: initialDir));
 }
@@ -47,9 +47,8 @@ ThemeData? _applyThemeValues(ThemeData? theme) {
 }
 
 class Files extends StatelessWidget {
-  final String? initialDir;
-
   const Files({this.initialDir, super.key});
+  final String? initialDir;
 
   @override
   Widget build(BuildContext context) {
@@ -71,12 +70,11 @@ class Files extends StatelessWidget {
 }
 
 class FilesHome extends StatefulWidget {
+  const FilesHome({this.initialDir, super.key});
   final String? initialDir;
 
-  const FilesHome({this.initialDir, super.key});
-
   @override
-  _FilesHomeState createState() => _FilesHomeState();
+  State<FilesHome> createState() => _FilesHomeState();
 }
 
 class _FilesHomeState extends State<FilesHome> {
@@ -130,8 +128,7 @@ class _FilesHomeState extends State<FilesHome> {
                   StreamBuilder<YaruWindowState>(
                     stream: YaruWindow.states(context),
                     builder: (context, snapshot) {
-                      final bool maximized =
-                          snapshot.data?.isMaximized ?? false;
+                      final maximized = snapshot.data?.isMaximized ?? false;
 
                       return YaruWindowControl(
                         type: maximized
@@ -160,7 +157,7 @@ class _FilesHomeState extends State<FilesHome> {
                 SidePane(
                   destinations: folderProvider.destinations,
                   workspace: workspaces[currentWorkspace],
-                  onNewTab: (String tabPath) {
+                  onNewTab: (tabPath) {
                     workspaces.add(WorkspaceController(initialDir: tabPath));
                     currentWorkspace = workspaces.length - 1;
                     setState(() {});

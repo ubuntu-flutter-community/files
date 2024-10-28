@@ -9,9 +9,8 @@ import 'package:udisks/udisks.dart';
 import 'package:yaru/yaru.dart';
 
 class DriveList extends StatelessWidget {
-  final ValueChanged<String>? onDriveTap;
-
   const DriveList({this.onDriveTap, super.key});
+  final ValueChanged<String>? onDriveTap;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +24,8 @@ class DriveList extends StatelessWidget {
           children: driveProvider.blockDevices
               .where(
                 (e) =>
-                    !e.userspaceMountOptions.contains("x-gdu.hide") &&
-                    !e.userspaceMountOptions.contains("x-gvfs-hide"),
+                    !e.userspaceMountOptions.contains('x-gdu.hide') &&
+                    !e.userspaceMountOptions.contains('x-gvfs-hide'),
               )
               .where((e) => !e.hintIgnore && e.filesystem != null)
               .map(
@@ -43,13 +42,12 @@ class DriveList extends StatelessWidget {
 }
 
 class _DriveTile extends StatefulWidget {
-  final UDisksBlockDevice blockDevice;
-  final ValueChanged<String>? onTap;
-
   const _DriveTile({
     required this.blockDevice,
     this.onTap,
   });
+  final UDisksBlockDevice blockDevice;
+  final ValueChanged<String>? onTap;
 
   @override
   State<_DriveTile> createState() => _DriveTileState();
@@ -74,7 +72,7 @@ class _DriveTileState extends State<_DriveTile> {
   }
 
   void _onPoll(Timer ref) {
-    final String? currentMountPoint = getMountPoint();
+    final currentMountPoint = getMountPoint();
 
     if (mountPoint != currentMountPoint) {
       mountPoint = currentMountPoint;
@@ -90,14 +88,14 @@ class _DriveTileState extends State<_DriveTile> {
 
   @override
   Widget build(BuildContext context) {
-    String? mountPoint = widget.blockDevice.filesystem!.mountPoints.isNotEmpty
+    var mountPoint = widget.blockDevice.filesystem!.mountPoints.isNotEmpty
         ? widget.blockDevice.filesystem!.mountPoints.first.decode()
         : null;
 
-    final String? idLabel = widget.blockDevice.idLabel.isNotEmpty
+    final idLabel = widget.blockDevice.idLabel.isNotEmpty
         ? widget.blockDevice.idLabel
         : null;
-    final String? hintName = widget.blockDevice.hintName.isNotEmpty
+    final hintName = widget.blockDevice.hintName.isNotEmpty
         ? widget.blockDevice.hintName
         : null;
 
@@ -112,7 +110,7 @@ class _DriveTileState extends State<_DriveTile> {
         title: Text(
           idLabel ??
               hintName ??
-              "${filesize(widget.blockDevice.size, 1)} drive",
+              '${filesize(widget.blockDevice.size, 1)} drive',
         ),
         subtitle: mountPoint != null ? Text(mountPoint) : null,
         trailing: mountPoint != null

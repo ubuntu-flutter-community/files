@@ -5,14 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:yaru/yaru.dart';
 
 class TabStrip extends StatelessWidget {
-  final List<WorkspaceController> tabs;
-  final int selectedTab;
-  final bool allowClosing;
-  final ValueChanged<int>? onTabChanged;
-  final ValueChanged<int>? onTabClosed;
-  final VoidCallback? onNewTab;
-  final List<Widget> trailing;
-
   const TabStrip({
     required this.tabs,
     required this.selectedTab,
@@ -23,6 +15,13 @@ class TabStrip extends StatelessWidget {
     this.trailing = const [],
     super.key,
   });
+  final List<WorkspaceController> tabs;
+  final int selectedTab;
+  final bool allowClosing;
+  final ValueChanged<int>? onTabChanged;
+  final ValueChanged<int>? onTabClosed;
+  final VoidCallback? onNewTab;
+  final List<Widget> trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -35,11 +34,11 @@ class TabStrip extends StatelessWidget {
                 openOnLongPress: false,
                 entries: [
                   ContextMenuItem(
-                    child: const Text("Create new tab"),
+                    child: const Text('Create new tab'),
                     onTap: () => onNewTab?.call(),
                   ),
                   ContextMenuItem(
-                    child: const Text("Close tab"),
+                    child: const Text('Close tab'),
                     onTap: () => onTabClosed?.call(index),
                     enabled: allowClosing,
                   ),
@@ -79,12 +78,6 @@ class TabStrip extends StatelessWidget {
 }
 
 class _Tab extends StatefulWidget {
-  final WorkspaceController tab;
-  final bool selected;
-  final VoidCallback? onTap;
-  final VoidCallback? onClosed;
-  final bool allowClosing;
-
   const _Tab({
     required this.tab,
     required this.selected,
@@ -92,6 +85,11 @@ class _Tab extends StatefulWidget {
     this.onClosed,
     this.allowClosing = true,
   });
+  final WorkspaceController tab;
+  final bool selected;
+  final VoidCallback? onTap;
+  final VoidCallback? onClosed;
+  final bool allowClosing;
 
   @override
   State<_Tab> createState() => _TabState();

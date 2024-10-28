@@ -8,13 +8,6 @@ import 'package:files/backend/utils.dart';
 import 'package:flutter/material.dart';
 
 class BreadcrumbsBar extends StatefulWidget {
-  final PathParts path;
-  final ValueChanged<String>? onBreadcrumbPress;
-  final ValueChanged<String>? onPathSubmitted;
-  final List<Widget>? leading;
-  final List<Widget>? actions;
-  final double? loadingProgress;
-
   const BreadcrumbsBar({
     required this.path,
     this.onBreadcrumbPress,
@@ -24,6 +17,12 @@ class BreadcrumbsBar extends StatefulWidget {
     this.loadingProgress,
     super.key,
   });
+  final PathParts path;
+  final ValueChanged<String>? onBreadcrumbPress;
+  final ValueChanged<String>? onPathSubmitted;
+  final List<Widget>? leading;
+  final List<Widget>? actions;
+  final double? loadingProgress;
 
   @override
   State<BreadcrumbsBar> createState() => _BreadcrumbsBarState();
@@ -128,18 +127,17 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
       final List<PathParts> actualParts;
 
       // We need home folder on last position here to emulate a low priority entry
-      final List<BuiltinFolder> sortedFolders = folderProvider.folders;
-      final int homeIndex =
+      final sortedFolders = folderProvider.folders;
+      final homeIndex =
           sortedFolders.indexWhere((e) => e.type == FolderType.home);
       sortedFolders.add(sortedFolders.removeAt(homeIndex));
 
-      final BuiltinFolder? builtinFolder = sortedFolders.firstWhereOrNull(
+      final builtinFolder = sortedFolders.firstWhereOrNull(
         (e) => widget.path.toPath().startsWith(e.directory.path),
       );
 
       if (builtinFolder != null) {
-        final PathParts builtinParts =
-            PathParts.parse(builtinFolder.directory.path);
+        final builtinParts = PathParts.parse(builtinFolder.directory.path);
         actualParts = [
           builtinParts,
           ...List.generate(
@@ -159,7 +157,7 @@ class _BreadcrumbsBarState extends State<BreadcrumbsBar> {
       return ListView.builder(
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          final bool isInsideBuiltin = builtinFolder != null &&
+          final isInsideBuiltin = builtinFolder != null &&
               actualParts[index].toPath() == builtinFolder.directory.path;
 
           return _BreadcrumbChip(
@@ -224,13 +222,12 @@ class _BreadcrumbChip extends StatelessWidget {
 }
 
 class _LoadingIndicator extends StatefulWidget {
-  final double? progress;
-  final Widget child;
-
   const _LoadingIndicator({
     required this.progress,
     required this.child,
   });
+  final double? progress;
+  final Widget child;
 
   @override
   _LoadingIndicatorState createState() => _LoadingIndicatorState();
@@ -274,15 +271,15 @@ class _LoadingIndicatorState extends State<_LoadingIndicator>
     if (widget.progress != old.progress) {
       if (widget.progress != null && old.progress == null) {
         fadeController.value = 1;
-        progressController.animateTo(widget.progress!);
+        await progressController.animateTo(widget.progress!);
       } else if (widget.progress == null && old.progress != null) {
         await fadeController.reverse();
         progressController.value = 0;
       } else if (widget.progress != null && old.progress != null) {
         if (widget.progress! > old.progress!) {
-          progressController.animateTo(widget.progress!);
+          await progressController.animateTo(widget.progress!);
         } else if (widget.progress! < old.progress!) {
-          progressController.animateBack(widget.progress!);
+          await progressController.animateBack(widget.progress!);
         }
       }
     }

@@ -20,15 +20,14 @@ import 'package:url_launcher/url_launcher_string.dart';
 import 'package:yaru/yaru.dart';
 
 class FilesWorkspace extends StatefulWidget {
-  final WorkspaceController controller;
-
   const FilesWorkspace({
     required this.controller,
     super.key,
   });
+  final WorkspaceController controller;
 
   @override
-  _FilesWorkspaceState createState() => _FilesWorkspaceState();
+  State<FilesWorkspace> createState() => _FilesWorkspaceState();
 }
 
 class _FilesWorkspaceState extends State<FilesWorkspace> {
@@ -84,11 +83,11 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   Future<void> _createFolder() async {
     final folderNameDialog = await promptNewFolder();
-    final PathParts currentDir = PathParts.parse(controller.currentDir);
+    final currentDir = PathParts.parse(controller.currentDir);
     currentDir.parts.add('$folderNameDialog');
     if (folderNameDialog != null) {
       await Directory(currentDir.toPath()).create(recursive: true);
-      controller.changeCurrentDir(currentDir.toPath());
+      await controller.changeCurrentDir(currentDir.toPath());
     }
   }
 
@@ -111,37 +110,36 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   }
 
   String get selectedItemsLabel {
-    if (controller.selectedItems.isEmpty) return "";
+    if (controller.selectedItems.isEmpty) return '';
 
     late String itemLabel;
 
     if (controller.selectedItems.length == 1) {
-      itemLabel = "item";
+      itemLabel = 'item';
     } else {
-      itemLabel = "items";
+      itemLabel = 'items';
     }
 
-    String baseString =
-        "${controller.selectedItems.length} selected $itemLabel";
+    var baseString = '${controller.selectedItems.length} selected $itemLabel';
 
     if (controller.selectedItems.every((element) => element.isFile)) {
-      final int totalSize = controller.selectedItems.fold(
+      final totalSize = controller.selectedItems.fold(
         0,
         (previousValue, element) => previousValue + element.stat.size,
       );
-      baseString += " ${filesize(totalSize)}";
+      baseString += ' ${filesize(totalSize)}';
     }
 
     return baseString;
   }
 
   void _onEntityTap(EntityInfo entity) {
-    final bool selected = controller.selectedItems.contains(entity);
-    final Set<LogicalKeyboardKey> keysPressed =
+    final selected = controller.selectedItems.contains(entity);
+    final keysPressed =
         // TODO: remove ignore
         // ignore: deprecated_member_use
         RawKeyboard.instance.keysPressed;
-    final bool multiSelect = keysPressed.contains(
+    final multiSelect = keysPressed.contains(
           LogicalKeyboardKey.controlLeft,
         ) ||
         keysPressed.contains(
@@ -171,7 +169,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 
   // To move more than one file
   void _onDropAccepted(String path) {
-    for (final EntityInfo entity in controller.selectedItems) {
+    for (final entity in controller.selectedItems) {
       Utils.moveFileToDest(entity.entity, path);
     }
   }
@@ -271,7 +269,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Row(
                 children: [
-                  Text("${controller.currentInfo?.length ?? 0} items"),
+                  Text('${controller.currentInfo?.length ?? 0} items'),
                   const Spacer(),
                   Text(selectedItemsLabel),
                 ],
@@ -300,7 +298,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
               size: 80,
             ),
             Text(
-              "This Folder is Empty",
+              'This Folder is Empty',
               style: TextStyle(fontSize: 17),
             ),
           ],
@@ -378,30 +376,27 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
 }
 
 class _WorkspaceTopbar extends StatelessWidget {
-  final WorkspaceController controller;
-  final ValueChanged<WorkspaceView>? onWorkspaceViewChanged;
-  final List<BaseContextMenuItem> Function(BuildContext context)? popupBuilder;
-
   const _WorkspaceTopbar({
     required this.controller,
     this.onWorkspaceViewChanged,
     this.popupBuilder,
   });
+  final WorkspaceController controller;
+  final ValueChanged<WorkspaceView>? onWorkspaceViewChanged;
+  final List<BaseContextMenuItem> Function(BuildContext context)? popupBuilder;
 
   @override
   Widget build(BuildContext context) {
     return BreadcrumbsBar(
       path: PathParts.parse(controller.currentDir),
-      onBreadcrumbPress: (value) {
-        controller.changeCurrentDir(value);
-      },
+      onBreadcrumbPress: controller.changeCurrentDir,
       onPathSubmitted: (path) async {
-        final bool exists = await Directory(path).exists();
+        final exists = await Directory(path).exists();
 
         if (exists) {
-          controller.changeCurrentDir(path);
+          await controller.changeCurrentDir(path);
         } else {
-          controller.changeCurrentDir(controller.currentDir);
+          await controller.changeCurrentDir(controller.currentDir);
         }
       },
       leading: [
@@ -424,7 +419,7 @@ class _WorkspaceTopbar extends StatelessWidget {
         const SizedBox(width: 8),
         YaruOptionButton(
           onPressed: () {
-            final PathParts backDir = PathParts.parse(controller.currentDir);
+            final backDir = PathParts.parse(controller.currentDir);
             controller.changeCurrentDir(
               backDir.toPath(backDir.parts.length - 1),
             );
@@ -480,13 +475,6 @@ class _WorkspaceTopbar extends StatelessWidget {
 enum _HistoryModifierIconButtonType { left, right }
 
 class _HistoryModifierIconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback onPressed;
-  final bool enabled;
-  final ValueChanged<int>? onHistoryOffsetChanged;
-  final WorkspaceController controller;
-  final _HistoryModifierIconButtonType type;
-
   const _HistoryModifierIconButton({
     required this.icon,
     required this.onPressed,
@@ -495,6 +483,12 @@ class _HistoryModifierIconButton extends StatelessWidget {
     required this.controller,
     required this.type,
   });
+  final IconData icon;
+  final VoidCallback onPressed;
+  final bool enabled;
+  final ValueChanged<int>? onHistoryOffsetChanged;
+  final WorkspaceController controller;
+  final _HistoryModifierIconButtonType type;
 
   @override
   Widget build(BuildContext context) {
@@ -540,13 +534,12 @@ class _HistoryModifierIconButton extends StatelessWidget {
 }
 
 class _WorkspaceErrorWidget extends StatelessWidget {
-  final OSError error;
-  final String path;
-
   const _WorkspaceErrorWidget({
     required this.error,
     required this.path,
   });
+  final OSError error;
+  final String path;
 
   @override
   Widget build(BuildContext context) {
@@ -563,13 +556,13 @@ class _WorkspaceErrorWidget extends StatelessWidget {
           Text.rich(
             TextSpan(
               children: [
-                const TextSpan(text: "Error while accessing "),
+                const TextSpan(text: 'Error while accessing '),
                 TextSpan(
                   text: path,
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 TextSpan(
-                  text: "\n${error.message}",
+                  text: '\n${error.message}',
                   style: TextStyle(
                     color: Theme.of(context).colorScheme.primary,
                   ),

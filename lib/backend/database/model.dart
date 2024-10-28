@@ -10,20 +10,6 @@ part 'model.g.dart';
 
 @Collection()
 class EntityStat with ChangeNotifier {
-  Id? id;
-
-  @Index(unique: true, type: IndexType.hash)
-  late String path;
-
-  late DateTime changed;
-  late DateTime modified;
-  late DateTime accessed;
-
-  @enumerated
-  late EntityType type;
-  late int mode;
-  late int size;
-
   EntityStat();
 
   EntityStat.fastInit({
@@ -46,9 +32,22 @@ class EntityStat with ChangeNotifier {
           mode: stat.mode,
           size: stat.size,
         );
+  Id? id;
+
+  @Index(unique: true, type: IndexType.hash)
+  late String path;
+
+  late DateTime changed;
+  late DateTime modified;
+  late DateTime accessed;
+
+  @enumerated
+  late EntityType type;
+  late int mode;
+  late int size;
 
   Future<void> fetchUpdate() async {
-    final FileStat ioStat = await FileStat.stat(path);
+    final ioStat = await FileStat.stat(path);
 
     if (!_statIdentical(ioStat)) {
       changed = ioStat.changed;

@@ -14,15 +14,6 @@ enum SortType {
 }
 
 class CancelableFsFetch {
-  final Directory directory;
-  final ValueChanged<List<EntityInfo>?> onFetched;
-  final VoidCallback? onCancel;
-  final ValueChanged<double?>? onProgressChange;
-  final ValueChanged<OSError?>? onFileSystemException;
-  final bool ascending;
-  final SortType sortType;
-  final bool showHidden;
-
   CancelableFsFetch({
     required this.directory,
     required this.onFetched,
@@ -33,6 +24,14 @@ class CancelableFsFetch {
     this.sortType = SortType.name,
     this.showHidden = false,
   });
+  final Directory directory;
+  final ValueChanged<List<EntityInfo>?> onFetched;
+  final VoidCallback? onCancel;
+  final ValueChanged<double?>? onProgressChange;
+  final ValueChanged<OSError?>? onFileSystemException;
+  final bool ascending;
+  final SortType sortType;
+  final bool showHidden;
 
   bool _running = false;
   Completer<void> cancelableCompleter = Completer<void>();
@@ -49,7 +48,7 @@ class CancelableFsFetch {
           .list()
           .where(
             (element) =>
-                !Utils.getEntityName(element.path).startsWith(".") ||
+                !Utils.getEntityName(element.path).startsWith('.') ||
                 showHidden,
           )
           .toList();
@@ -58,11 +57,11 @@ class CancelableFsFetch {
       _cancelled = true;
       return;
     }
-    final List<EntityInfo> directories = [];
-    final List<EntityInfo> files = [];
+    final directories = <EntityInfo>[];
+    final files = <EntityInfo>[];
 
     _running = true;
-    for (int i = 0; i < list.length; i++) {
+    for (var i = 0; i < list.length; i++) {
       if (_cancelled) {
         onCancel?.call();
         cancelableCompleter.complete();
@@ -104,8 +103,8 @@ class CancelableFsFetch {
     EntityInfo b, {
     bool isDirectory = false,
   }) {
-    EntityInfo item1 = a;
-    EntityInfo item2 = b;
+    var item1 = a;
+    var item2 = b;
 
     if (!ascending) {
       item2 = a;

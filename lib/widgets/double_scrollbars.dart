@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
 class DoubleScrollbars extends StatelessWidget {
-  final ScrollController horizontalController;
-  final ScrollController verticalController;
-  final Widget child;
-
   const DoubleScrollbars({
     required this.horizontalController,
     required this.verticalController,
     required this.child,
     super.key,
   });
+  final ScrollController horizontalController;
+  final ScrollController verticalController;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -49,13 +48,12 @@ class DoubleScrollbars extends StatelessWidget {
 }
 
 class _ScrollReceiver extends StatefulWidget {
-  final Axis direction;
-  final Widget child;
-
   const _ScrollReceiver({
     required this.direction,
     required this.child,
   });
+  final Axis direction;
+  final Widget child;
 
   @override
   _ScrollReceiverState createState() => _ScrollReceiverState();
@@ -78,12 +76,11 @@ class _ScrollReceiverState extends State<_ScrollReceiver> {
 }
 
 class _ScrollReceiverInheritedWidget extends InheritedWidget {
-  final _ScrollReceiverState state;
-
   const _ScrollReceiverInheritedWidget({
     required this.state,
     required super.child,
   });
+  final _ScrollReceiverState state;
 
   @override
   bool updateShouldNotify(covariant InheritedWidget oldWidget) {
@@ -97,6 +94,8 @@ class HorizontalScrollReceiver extends _ScrollReceiverInheritedWidget {
     required super.child,
   });
 
+  // TODO(@Feichtmeier): fix ignore
+  // ignore: library_private_types_in_public_api
   static _ScrollReceiverState of(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<HorizontalScrollReceiver>()!
@@ -110,6 +109,8 @@ class VerticalScrollReceiver extends _ScrollReceiverInheritedWidget {
     required super.child,
   });
 
+  // TODO(@Feichtmeier): fix ignore
+  // ignore: library_private_types_in_public_api
   static _ScrollReceiverState of(BuildContext context) {
     return context
         .dependOnInheritedWidgetOfExactType<VerticalScrollReceiver>()!
@@ -118,14 +119,13 @@ class VerticalScrollReceiver extends _ScrollReceiverInheritedWidget {
 }
 
 class ScrollProxy extends StatelessWidget {
-  final Axis direction;
-  final Widget child;
-
   const ScrollProxy({
     required this.direction,
     required this.child,
     super.key,
   });
+  final Axis direction;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -149,12 +149,11 @@ class ScrollProxy extends StatelessWidget {
 }
 
 class ScrollNotificationIsolater extends StatelessWidget {
-  final Widget child;
-
   const ScrollNotificationIsolater({
     required this.child,
     super.key,
   });
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
