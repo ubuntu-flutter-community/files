@@ -104,8 +104,8 @@ class CancelableFsFetch {
     EntityInfo b, {
     bool isDirectory = false,
   }) {
-    var item1 = a;
-    var item2 = b;
+    EntityInfo item1 = a;
+    EntityInfo item2 = b;
 
     if (!ascending) {
       item2 = a;

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:files/backend/database/model.dart';
 import 'package:files/backend/providers.dart';
 
@@ -13,8 +15,9 @@ class StatCacheProxy {
       return stat;
     }
 
-    // TODO(@HrX03): is this correct?
-    // ignore: unawaited_futures
-    return _runtimeCache[path]!..fetchUpdate();
+    final runtimeCache = _runtimeCache[path];
+    await runtimeCache!.fetchUpdate();
+
+    return runtimeCache;
   }
 }
