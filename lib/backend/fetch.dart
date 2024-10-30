@@ -49,7 +49,7 @@ class CancelableFsFetch {
           .list()
           .where(
             (element) =>
-                !Utils.getEntityName(element.path).startsWith(".") ||
+                !Utils.getEntityName(element.path).startsWith('.') ||
                 showHidden,
           )
           .toList();
@@ -58,11 +58,11 @@ class CancelableFsFetch {
       _cancelled = true;
       return;
     }
-    final List<EntityInfo> directories = [];
-    final List<EntityInfo> files = [];
+    final directories = <EntityInfo>[];
+    final files = <EntityInfo>[];
 
     _running = true;
-    for (int i = 0; i < list.length; i++) {
+    for (var i = 0; i < list.length; i++) {
       if (_cancelled) {
         onCancel?.call();
         cancelableCompleter.complete();

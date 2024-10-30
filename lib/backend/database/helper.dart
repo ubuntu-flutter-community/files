@@ -5,11 +5,10 @@ import 'package:files/backend/providers.dart';
 
 class EntityStatCacheHelper {
   Future<EntityStat> get(String path) async {
-    final EntityStat? stat =
-        isar.entityStats.where().pathEqualTo(path).findFirstSync();
+    final stat = isar.entityStats.where().pathEqualTo(path).findFirstSync();
 
     if (stat == null) {
-      final EntityStat fetchedStat = EntityStat.fromStat(
+      final fetchedStat = EntityStat.fromStat(
         path,
         await FileStat.stat(path),
       );
@@ -19,7 +18,6 @@ class EntityStatCacheHelper {
     return stat;
   }
 
-  Future<void> set(EntityStat entity) async {
-    isar.writeTxn(() => isar.entityStats.put(entity));
-  }
+  Future<void> set(EntityStat entity) =>
+      isar.writeTxn(() => isar.entityStats.put(entity));
 }

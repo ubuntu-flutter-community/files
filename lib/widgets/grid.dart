@@ -11,16 +11,6 @@ typedef EntityCallback = void Function(EntityInfo entity);
 typedef DropAcceptCallback = void Function(String path);
 
 class FilesGrid extends StatefulWidget {
-  final List<EntityInfo> entities;
-  final EntityCallback? onEntityTap;
-  final EntityCallback? onEntityDoubleTap;
-  final EntityCallback? onEntityLongTap;
-  final EntityCallback? onEntitySecondaryTap;
-  final ValueChanged<double>? onSizeChange;
-  final DropAcceptCallback? onDropAccept;
-  final double size;
-  final ScrollController? controller;
-
   const FilesGrid({
     required this.entities,
     this.onEntityTap,
@@ -34,6 +24,16 @@ class FilesGrid extends StatefulWidget {
     super.key,
   });
 
+  final List<EntityInfo> entities;
+  final EntityCallback? onEntityTap;
+  final EntityCallback? onEntityDoubleTap;
+  final EntityCallback? onEntityLongTap;
+  final EntityCallback? onEntitySecondaryTap;
+  final ValueChanged<double>? onSizeChange;
+  final DropAcceptCallback? onDropAccept;
+  final double size;
+  final ScrollController? controller;
+
   @override
   State<FilesGrid> createState() => _FilesGridState();
 }
@@ -45,7 +45,7 @@ class _FilesGridState extends State<FilesGrid> {
 
   @override
   Widget build(BuildContext context) {
-    final WorkspaceController controller = WorkspaceController.of(context);
+    final controller = WorkspaceController.of(context);
 
     return GestureDetector(
       onTap: controller.clearSelectedItems,
@@ -62,7 +62,7 @@ class _FilesGridState extends State<FilesGrid> {
           itemCount: widget.entities.length,
           controller: scrollController,
           itemBuilder: (context, index) {
-            final EntityInfo entityInfo = widget.entities[index];
+            final entityInfo = widget.entities[index];
 
             return Draggable<FileSystemEntity>(
               data: entityInfo.entity,
@@ -100,14 +100,6 @@ class _FilesGridState extends State<FilesGrid> {
 }
 
 class FileCell extends StatelessWidget {
-  final EntityInfo entity;
-  final bool selected;
-  final EntityCallback? onTap;
-  final EntityCallback? onDoubleTap;
-  final EntityCallback? onLongTap;
-  final EntityCallback? onSecondaryTap;
-  final DropAcceptCallback? onDropAccept;
-
   const FileCell({
     required this.entity,
     this.selected = false,
@@ -118,18 +110,25 @@ class FileCell extends StatelessWidget {
     this.onDropAccept,
     super.key,
   });
+  final EntityInfo entity;
+  final bool selected;
+  final EntityCallback? onTap;
+  final EntityCallback? onDoubleTap;
+  final EntityCallback? onLongTap;
+  final EntityCallback? onSecondaryTap;
+  final DropAcceptCallback? onDropAccept;
 
   @override
   Widget build(BuildContext context) {
     return DragTarget<FileSystemEntity>(
-      onWillAccept: (data) {
+      onWillAcceptWithDetails: (details) {
         if (!entity.isDirectory) return false;
 
-        if (data!.path == entity.path) return false;
+        if (details.data.path == entity.path) return false;
 
         return true;
       },
-      onAccept: (_) => onDropAccept?.call(entity.path),
+      onAcceptWithDetails: (_) => onDropAccept?.call(entity.path),
       builder: (context, _, __) => Material(
         clipBehavior: Clip.antiAlias,
         shape: RoundedRectangleBorder(
@@ -169,16 +168,15 @@ class FileCell extends StatelessWidget {
 }
 
 class Cell extends StatelessWidget {
-  final String name;
-  final IconData icon;
-  final Color? iconColor;
-
   const Cell({
     required this.name,
     required this.icon,
     this.iconColor,
     super.key,
   });
+  final String name;
+  final IconData icon;
+  final Color? iconColor;
 
   @override
   Widget build(BuildContext context) {
@@ -209,9 +207,8 @@ class Cell extends StatelessWidget {
 }
 
 class _ConstrainedIcon extends StatelessWidget {
-  final Widget child;
-
   const _ConstrainedIcon({required this.child});
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

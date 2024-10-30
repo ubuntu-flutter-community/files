@@ -3,12 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class TimedInkwell extends StatefulWidget {
-  final Widget? child;
-  final VoidCallback? onTap;
-  final VoidCallback? onDoubleTap;
-  final VoidCallback? onLongPress;
-  final Duration tapDelay;
-
   const TimedInkwell({
     this.child,
     this.onTap,
@@ -17,6 +11,12 @@ class TimedInkwell extends StatefulWidget {
     this.tapDelay = const Duration(milliseconds: 300),
     super.key,
   });
+
+  final Widget? child;
+  final VoidCallback? onTap;
+  final VoidCallback? onDoubleTap;
+  final VoidCallback? onLongPress;
+  final Duration tapDelay;
 
   @override
   State<TimedInkwell> createState() => _TimedInkwellState();

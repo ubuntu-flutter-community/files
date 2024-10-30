@@ -1,13 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class ContextMenu extends StatefulWidget {
-  final List<BaseContextMenuItem> entries;
-  final Widget child;
-  final bool openOnLongPress;
-  final bool openOnSecondaryPress;
-
   const ContextMenu({
     required this.entries,
     required this.child,
@@ -15,6 +9,11 @@ class ContextMenu extends StatefulWidget {
     this.openOnSecondaryPress = true,
     super.key,
   });
+
+  final List<BaseContextMenuItem> entries;
+  final Widget child;
+  final bool openOnLongPress;
+  final bool openOnSecondaryPress;
 
   @override
   State<ContextMenu> createState() => _ContextMenuState();
@@ -42,13 +41,12 @@ class _ContextMenuState extends State<ContextMenu> {
 }
 
 class _EnabledBuilder extends StatelessWidget {
-  final bool enabled;
-  final Widget child;
-
   const _EnabledBuilder({
     required this.enabled,
     required this.child,
   });
+  final bool enabled;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {
@@ -63,17 +61,16 @@ class _EnabledBuilder extends StatelessWidget {
 }
 
 abstract class BaseContextMenuItem {
-  final Widget child;
-  final Widget? leading;
-  final Widget? trailing;
-  final bool enabled;
-
   const BaseContextMenuItem({
     required this.child,
     this.enabled = true,
     this.leading,
     this.trailing,
   });
+  final Widget child;
+  final Widget? leading;
+  final Widget? trailing;
+  final bool enabled;
 
   Widget buildWrapper(BuildContext context) =>
       _EnabledBuilder(enabled: enabled, child: build(context));
@@ -84,14 +81,13 @@ abstract class BaseContextMenuItem {
 }
 
 class SubmenuMenuItem extends BaseContextMenuItem {
-  final List<BaseContextMenuItem> menuChildren;
-
   const SubmenuMenuItem({
     required super.child,
     required this.menuChildren,
     super.leading,
     super.enabled,
   }) : super(trailing: null);
+  final List<BaseContextMenuItem> menuChildren;
 
   @override
   Widget? buildTrailing(BuildContext context) {
@@ -105,7 +101,7 @@ class SubmenuMenuItem extends BaseContextMenuItem {
       leadingIcon: buildLeading(context),
       trailingIcon: buildTrailing(context),
       style: const ButtonStyle(
-        padding: MaterialStatePropertyAll(
+        padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
@@ -115,9 +111,6 @@ class SubmenuMenuItem extends BaseContextMenuItem {
 }
 
 class ContextMenuItem extends BaseContextMenuItem {
-  final VoidCallback? onTap;
-  final MenuSerializableShortcut? shortcut;
-
   const ContextMenuItem({
     required super.child,
     this.onTap,
@@ -126,10 +119,12 @@ class ContextMenuItem extends BaseContextMenuItem {
     this.shortcut,
     super.enabled,
   });
+  final VoidCallback? onTap;
+  final MenuSerializableShortcut? shortcut;
 
   @override
   Widget build(BuildContext context) {
-    final Widget? leading = buildLeading(context);
+    final leading = buildLeading(context);
 
     return MenuItemButton(
       leadingIcon: leading != null
@@ -142,7 +137,7 @@ class ContextMenuItem extends BaseContextMenuItem {
       onPressed: onTap,
       shortcut: shortcut,
       style: const ButtonStyle(
-        padding: MaterialStatePropertyAll(
+        padding: WidgetStatePropertyAll(
           EdgeInsets.symmetric(horizontal: 16),
         ),
       ),
@@ -152,11 +147,6 @@ class ContextMenuItem extends BaseContextMenuItem {
 }
 
 class RadioMenuItem<T> extends ContextMenuItem {
-  final T value;
-  final T? groupValue;
-  final ValueChanged<T?>? onChanged;
-  final bool toggleable;
-
   const RadioMenuItem({
     required this.value,
     required this.groupValue,
@@ -167,6 +157,10 @@ class RadioMenuItem<T> extends ContextMenuItem {
     super.shortcut,
     super.enabled,
   }) : super(leading: null, onTap: null);
+  final T value;
+  final T? groupValue;
+  final ValueChanged<T?>? onChanged;
+  final bool toggleable;
 
   @override
   VoidCallback? get onTap => onChanged == null
@@ -195,10 +189,6 @@ class RadioMenuItem<T> extends ContextMenuItem {
 }
 
 class CheckboxMenuItem extends ContextMenuItem {
-  final bool? value;
-  final ValueChanged<bool?>? onChanged;
-  final bool tristate;
-
   const CheckboxMenuItem({
     required this.value,
     this.onChanged,
@@ -208,6 +198,9 @@ class CheckboxMenuItem extends ContextMenuItem {
     super.shortcut,
     super.enabled,
   }) : super(leading: null, onTap: null);
+  final bool? value;
+  final ValueChanged<bool?>? onChanged;
+  final bool tristate;
 
   @override
   VoidCallback? get onTap => onChanged == null
@@ -216,13 +209,10 @@ class CheckboxMenuItem extends ContextMenuItem {
           switch (value) {
             case false:
               onChanged!.call(true);
-              break;
             case true:
               onChanged!.call(tristate ? null : false);
-              break;
             case null:
               onChanged!.call(false);
-              break;
           }
         };
 

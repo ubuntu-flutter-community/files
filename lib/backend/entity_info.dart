@@ -17,13 +17,15 @@ limitations under the License.
 import 'dart:io';
 
 import 'package:files/backend/database/model.dart';
+import 'package:flutter/foundation.dart';
 
+@immutable
 class EntityInfo {
+  const EntityInfo._(this._entity, this.stat, this.entityType);
+
   final FileSystemEntity _entity;
   final EntityStat stat;
   final EntityType entityType;
-
-  const EntityInfo._(this._entity, this.stat, this.entityType);
 
   String get path => _entity.path;
 
@@ -41,7 +43,7 @@ class EntityInfo {
   }
 
   @override
-  bool operator ==(Object? other) {
+  bool operator ==(Object other) {
     if (other is EntityInfo) {
       return _equals(other);
     }

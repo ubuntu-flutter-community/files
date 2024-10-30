@@ -5,15 +5,11 @@ import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
 import 'package:files/widgets/drive_list.dart';
 import 'package:flutter/material.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 typedef NewTabCallback = void Function(String);
 
 class SidePane extends StatefulWidget {
-  final List<SideDestination> destinations;
-  final WorkspaceController workspace;
-  final NewTabCallback onNewTab;
-
   const SidePane({
     required this.destinations,
     required this.workspace,
@@ -21,8 +17,12 @@ class SidePane extends StatefulWidget {
     super.key,
   });
 
+  final List<SideDestination> destinations;
+  final WorkspaceController workspace;
+  final NewTabCallback onNewTab;
+
   @override
-  _SidePaneState createState() => _SidePaneState();
+  State<SidePane> createState() => _SidePaneState();
 }
 
 class _SidePaneState extends State<SidePane> {
@@ -77,16 +77,16 @@ class _SidePaneState extends State<SidePane> {
             return ContextMenu(
               entries: [
                 ContextMenuItem(
-                  child: const Text("Open"),
+                  child: const Text('Open'),
                   onTap: () => widget.workspace
                       .changeCurrentDir(widget.destinations[index].path),
                 ),
                 ContextMenuItem(
-                  child: const Text("Open in new tab"),
+                  child: const Text('Open in new tab'),
                   onTap: () => widget.onNewTab(widget.destinations[index].path),
                 ),
                 ContextMenuItem(
-                  child: const Text("Open in new window"),
+                  child: const Text('Open in new window'),
                   onTap: () async {
                     await Process.start(
                       Platform.resolvedExecutable,

@@ -2,18 +2,9 @@ import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/context_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:yaru_icons/yaru_icons.dart';
-import 'package:yaru_widgets/yaru_widgets.dart';
+import 'package:yaru/yaru.dart';
 
 class TabStrip extends StatelessWidget {
-  final List<WorkspaceController> tabs;
-  final int selectedTab;
-  final bool allowClosing;
-  final ValueChanged<int>? onTabChanged;
-  final ValueChanged<int>? onTabClosed;
-  final VoidCallback? onNewTab;
-  final List<Widget> trailing;
-
   const TabStrip({
     required this.tabs,
     required this.selectedTab,
@@ -24,6 +15,14 @@ class TabStrip extends StatelessWidget {
     this.trailing = const [],
     super.key,
   });
+
+  final List<WorkspaceController> tabs;
+  final int selectedTab;
+  final bool allowClosing;
+  final ValueChanged<int>? onTabChanged;
+  final ValueChanged<int>? onTabClosed;
+  final VoidCallback? onNewTab;
+  final List<Widget> trailing;
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +35,11 @@ class TabStrip extends StatelessWidget {
                 openOnLongPress: false,
                 entries: [
                   ContextMenuItem(
-                    child: const Text("Create new tab"),
+                    child: const Text('Create new tab'),
                     onTap: () => onNewTab?.call(),
                   ),
                   ContextMenuItem(
-                    child: const Text("Close tab"),
+                    child: const Text('Close tab'),
                     onTap: () => onTabClosed?.call(index),
                     enabled: allowClosing,
                   ),
@@ -80,12 +79,6 @@ class TabStrip extends StatelessWidget {
 }
 
 class _Tab extends StatefulWidget {
-  final WorkspaceController tab;
-  final bool selected;
-  final VoidCallback? onTap;
-  final VoidCallback? onClosed;
-  final bool allowClosing;
-
   const _Tab({
     required this.tab,
     required this.selected,
@@ -93,6 +86,11 @@ class _Tab extends StatefulWidget {
     this.onClosed,
     this.allowClosing = true,
   });
+  final WorkspaceController tab;
+  final bool selected;
+  final VoidCallback? onTap;
+  final VoidCallback? onClosed;
+  final bool allowClosing;
 
   @override
   State<_Tab> createState() => _TabState();
@@ -122,7 +120,7 @@ class _TabState extends State<_Tab> {
       height: double.infinity,
       child: Material(
         color: widget.selected
-            ? Theme.of(context).colorScheme.surfaceVariant
+            ? Theme.of(context).colorScheme.surfaceContainerHighest
             : Theme.of(context).colorScheme.surface,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(6),

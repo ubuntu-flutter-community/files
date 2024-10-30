@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:ubuntu_service/ubuntu_service.dart';
 
 String _isarPath(Directory dir) {
-  final String path = p.join(dir.path, 'isar');
+  final path = p.join(dir.path, 'isar');
   if (!Directory(path).existsSync()) Directory(path).create();
   return path;
 }

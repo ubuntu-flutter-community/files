@@ -153,8 +153,7 @@ class WorkspaceController with ChangeNotifier {
 
     if (updateHistory) {
       if (_historyOffset != 0) {
-        final List<String> validHistory =
-            _history.reversed.toList().sublist(_historyOffset);
+        final validHistory = _history.reversed.toList().sublist(_historyOffset);
         _history.clear();
         _history.addAll(validHistory.reversed);
         _historyOffset = 0;
@@ -195,17 +194,16 @@ class WorkspaceController with ChangeNotifier {
 }
 
 class TableViewState {
-  final double firstWidth;
-  final double secondWidth;
-  final double thirdWidth;
-  final double fourthWidth;
-
   const TableViewState({
     required this.firstWidth,
     required this.secondWidth,
     required this.thirdWidth,
     required this.fourthWidth,
   });
+  final double firstWidth;
+  final double secondWidth;
+  final double thirdWidth;
+  final double fourthWidth;
 
   List<double> get widths => [
         firstWidth,
@@ -245,9 +243,8 @@ class TableViewState {
 }
 
 class GridViewState {
-  final double size;
-
   const GridViewState({
     required this.size,
   });
+  final double size;
 }
