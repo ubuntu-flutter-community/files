@@ -7,6 +7,7 @@ class DoubleScrollbars extends StatelessWidget {
     required this.child,
     super.key,
   });
+
   final ScrollController horizontalController;
   final ScrollController verticalController;
   final Widget child;

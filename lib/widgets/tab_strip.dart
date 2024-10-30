@@ -15,6 +15,7 @@ class TabStrip extends StatelessWidget {
     this.trailing = const [],
     super.key,
   });
+
   final List<WorkspaceController> tabs;
   final int selectedTab;
   final bool allowClosing;

@@ -9,6 +9,7 @@ class ContextMenu extends StatefulWidget {
     this.openOnSecondaryPress = true,
     super.key,
   });
+
   final List<BaseContextMenuItem> entries;
   final Widget child;
   final bool openOnLongPress;

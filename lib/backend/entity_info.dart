@@ -22,6 +22,7 @@ import 'package:flutter/foundation.dart';
 @immutable
 class EntityInfo {
   const EntityInfo._(this._entity, this.stat, this.entityType);
+
   final FileSystemEntity _entity;
   final EntityStat stat;
   final EntityType entityType;

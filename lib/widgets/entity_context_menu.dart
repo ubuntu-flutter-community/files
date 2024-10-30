@@ -13,6 +13,7 @@ class EntityContextMenu extends StatelessWidget {
     this.onPaste,
     super.key,
   });
+
   final Widget child;
   final VoidCallback? onOpen;
   final VoidCallback? onOpenWith;

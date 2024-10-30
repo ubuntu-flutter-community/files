@@ -17,6 +17,7 @@ class BreadcrumbsBar extends StatefulWidget {
     this.loadingProgress,
     super.key,
   });
+
   final PathParts path;
   final ValueChanged<String>? onBreadcrumbPress;
   final ValueChanged<String>? onPathSubmitted;

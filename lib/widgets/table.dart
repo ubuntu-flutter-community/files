@@ -42,6 +42,7 @@ class FilesTable extends StatelessWidget {
     required this.verticalController,
     super.key,
   });
+
   final List<FilesRow> rows;
   final List<FilesColumn> columns;
   final double rowHeight;

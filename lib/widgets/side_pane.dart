@@ -16,6 +16,7 @@ class SidePane extends StatefulWidget {
     required this.onNewTab,
     super.key,
   });
+
   final List<SideDestination> destinations;
   final WorkspaceController workspace;
   final NewTabCallback onNewTab;

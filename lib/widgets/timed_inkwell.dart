@@ -11,6 +11,7 @@ class TimedInkwell extends StatefulWidget {
     this.tapDelay = const Duration(milliseconds: 300),
     super.key,
   });
+
   final Widget? child;
   final VoidCallback? onTap;
   final VoidCallback? onDoubleTap;

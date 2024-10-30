@@ -23,6 +23,7 @@ class FilesGrid extends StatefulWidget {
     this.controller,
     super.key,
   });
+
   final List<EntityInfo> entities;
   final EntityCallback? onEntityTap;
   final EntityCallback? onEntityDoubleTap;
