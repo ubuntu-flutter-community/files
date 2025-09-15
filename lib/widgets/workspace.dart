@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:files/backend/entity_info.dart';
 import 'package:files/backend/fetch.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/path_parts.dart';
 import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
@@ -157,10 +158,11 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
   }
 
   // To move more than one file
-  void _onDropAccepted(String path) {
-    for (final entity in controller.selectedItems) {
-      Utils.moveFileToDest(entity.entity, path);
-    }
+  void _onDropAccepted(String path) async {
+    final futures = [
+      for (final entity in controller.selectedItems) Utils.moveFileToDest(entity.file, path).result,
+    ];
+    await futures.wait;
   }
 
   List<BaseContextMenuItem> _getMenuEntries(BuildContext context) {
@@ -213,7 +215,7 @@ class _FilesWorkspaceState extends State<FilesWorkspace> {
       ContextMenuItem(
         child: const Text('Reload'),
         onTap: () async {
-          await controller.getInfoForDir(Directory(controller.currentDir));
+          await controller.getInfoForDir(fs.File.fromPath(controller.currentDir));
         },
       ),
     ];
@@ -415,7 +417,6 @@ class _WorkspaceTopbar extends StatelessWidget {
             },
           ),
       ],
-      loadingProgress: controller.loadingProgress,
     );
   }
 

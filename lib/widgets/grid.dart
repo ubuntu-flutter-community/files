@@ -1,6 +1,5 @@
-import 'dart:io';
-
 import 'package:files/backend/entity_info.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/entity_context_menu.dart';
@@ -63,8 +62,8 @@ class _FilesGridState extends State<FilesGrid> {
           itemBuilder: (context, index) {
             final entityInfo = widget.entities[index];
 
-            return Draggable<FileSystemEntity>(
-              data: entityInfo.entity,
+            return Draggable<fs.File>(
+              data: entityInfo.file,
               dragAnchorStrategy: (_, _, _) => const Offset(32, 32),
               feedback: Material(
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(6)),
@@ -115,7 +114,7 @@ class FileCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget<FileSystemEntity>(
+    return DragTarget<fs.File>(
       onWillAcceptWithDetails: (details) {
         if (!entity.isDirectory) return false;
 

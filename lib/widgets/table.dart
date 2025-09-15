@@ -1,7 +1,6 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:files/backend/entity_info.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/utils.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/double_scrollbars.dart';
@@ -113,14 +112,14 @@ class FilesTable extends StatelessWidget {
   Widget _buildRow(BuildContext context, int index) {
     final row = rows[index];
 
-    return Draggable<FileSystemEntity>(
+    return Draggable<fs.File>(
       childWhenDragging: _FilesRow(
         row: row,
         columns: columns,
         horizontalPadding: rowHorizontalPadding,
         size: Size(layoutWidth + (rowHorizontalPadding * 2), rowHeight),
       ),
-      data: row.entity.entity,
+      data: row.entity.file,
       dragAnchorStrategy: (draggable, context, position) {
         return const Offset(32, 32);
       },
@@ -275,7 +274,7 @@ class _FilesRowState extends State<_FilesRow> {
 
   @override
   Widget build(BuildContext context) {
-    return DragTarget<FileSystemEntity>(
+    return DragTarget<fs.File>(
       onWillAcceptWithDetails: (details) {
         if (!widget.row.entity.isDirectory) return false;
 
@@ -321,6 +320,11 @@ class _FilesRowState extends State<_FilesRow> {
 
                       await writer.write([item]);
                       print("Wrote"); */
+                    },
+                    onTrash: () async {
+                      final file = fs.File.fromPath(widget.row.entity.path);
+                      final operation = file.trash();
+                      await operation.result;
                     },
                     child: Padding(
                       padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding),

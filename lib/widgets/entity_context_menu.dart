@@ -11,6 +11,7 @@ class EntityContextMenu extends StatelessWidget {
     this.onCopy,
     this.onCut,
     this.onPaste,
+    this.onTrash,
     super.key,
   });
 
@@ -20,12 +21,14 @@ class EntityContextMenu extends StatelessWidget {
   final VoidCallback? onCopy;
   final VoidCallback? onCut;
   final VoidCallback? onPaste;
+  final VoidCallback? onTrash;
 
   @override
   Widget build(BuildContext context) {
     return CallbackShortcuts(
       bindings: {
         if (onCopy != null) const SingleActivator(LogicalKeyboardKey.keyC, control: true): onCopy!,
+        if (onTrash != null) const SingleActivator(LogicalKeyboardKey.delete): onTrash!,
       },
       child: ContextMenu(
         entries: [
@@ -57,6 +60,13 @@ class EntityContextMenu extends StatelessWidget {
             child: const Text('Paste file'),
             onTap: onPaste,
             shortcut: const SingleActivator(LogicalKeyboardKey.keyV, control: true),
+          ),
+          const ContextMenuDivider(),
+          ContextMenuItem(
+            leading: const Icon(YaruIcons.trash),
+            child: const Text('Move to trash'),
+            onTap: onTrash,
+            shortcut: const SingleActivator(LogicalKeyboardKey.delete),
           ),
         ],
         child: child,

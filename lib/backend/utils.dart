@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/path_parts.dart';
 import 'package:files/backend/providers.dart';
 import 'package:flutter/material.dart';
@@ -70,7 +69,7 @@ class Utils {
     return pathParts.integralParts.last;
   }
 
-  static void moveFileToDest(FileSystemEntity origin, String dest) {
+  static fs.TransferFileOperation moveFileToDest(fs.File origin, String dest) {
     final originParts = PathParts.parse(origin.path);
     final directoryParts = PathParts.parse(dest);
     final destinationParts = PathParts(
@@ -78,6 +77,6 @@ class Utils {
       directoryParts.parts..add(originParts.parts.last),
       originParts.separator,
     );
-    origin.rename(destinationParts.toPath());
+    return origin.move(destination: fs.File.fromPath(destinationParts.toPath()));
   }
 }

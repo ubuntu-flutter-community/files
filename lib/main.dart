@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+import 'package:files/backend/fs.dart' as fs;
 import 'package:files/backend/providers.dart';
 import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/side_pane.dart';
@@ -28,6 +29,8 @@ Future<void> main(List<String> args) async {
   await YaruWindow.ensureInitialized();
   await initProviders();
   await driveProvider.init();
+
+  fs.initFileSystemThread();
 
   final initialDir = args.isNotEmpty ? args.first : null;
 

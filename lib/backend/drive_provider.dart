@@ -15,6 +15,7 @@ class DriveProvider with ChangeNotifier {
 
   List<UDisksBlockDevice> get blockDevices => List.of(_blockDevices);
   List<UDisksDrive> get drives => List.of(_drives);
+  List<String> get supportedFilesystems => List.of(_client.supportedFilesystems);
 
   Future<void> init() async {
     await _client.connect();

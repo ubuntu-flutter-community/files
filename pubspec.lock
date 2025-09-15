@@ -161,6 +161,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.2"
+  code_assets:
+    dependency: "direct main"
+    description:
+      name: code_assets
+      sha256: "5865a34983367f6884e8311f67d9ae459945b99bad20c0e66484a1aae7feaae0"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.19.7"
   code_builder:
     dependency: transitive
     description:
@@ -339,6 +347,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.4.0"
+  hooks:
+    dependency: "direct main"
+    description:
+      name: hooks
+      sha256: "22abd27b650a571e53576abe732e4d9053aacaaa6dee23e9ff106c63e3e5b96c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.20.1"
   http_multi_server:
     dependency: transitive
     description:
@@ -735,10 +751,10 @@ packages:
     dependency: transitive
     description:
       name: shelf_web_socket
-      sha256: cc36c297b52866d203dbf9332263c94becc2fe0ceaa9681d07b6ef9807023b67
+      sha256: "3632775c8e90d6c9712f883e633716432a27758216dfb61bd86a8321c0580925"
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.1"
+    version: "3.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

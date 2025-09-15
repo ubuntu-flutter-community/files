@@ -14,25 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-import 'dart:io';
-
 import 'package:files/backend/database/model.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:flutter/foundation.dart';
 
 @immutable
 class EntityInfo {
-  const EntityInfo._(this._entity, this.stat, this.entityType);
+  const EntityInfo(this.file, this.stat, this.entityType);
 
-  final FileSystemEntity _entity;
+  final fs.File file;
   final EntityStat stat;
   final EntityType entityType;
 
-  String get path => _entity.path;
-
-  FileSystemEntity get entity => _entity;
+  String get path => file.path;
 
   bool _equals(EntityInfo other) {
-    return entity.path == other.entity.path &&
+    return file.path == other.file.path &&
         stat.accessed == other.stat.accessed &&
         stat.changed == other.stat.changed &&
         stat.mode == other.stat.mode &&
@@ -52,7 +49,7 @@ class EntityInfo {
 
   @override
   int get hashCode => Object.hash(
-    entity.path,
+    file.path,
     stat.accessed,
     stat.changed,
     stat.mode,
@@ -63,77 +60,12 @@ class EntityInfo {
   );
 }
 
-class FileEntityInfo extends EntityInfo {
-  const FileEntityInfo({required File entity, required EntityStat stat})
-    : super._(entity, stat, EntityType.file);
-
-  @override
-  File get entity => _entity as File;
-}
-
-class DirectoryEntityInfo extends EntityInfo {
-  const DirectoryEntityInfo({required Directory entity, required EntityStat stat})
-    : super._(entity, stat, EntityType.directory);
-
-  @override
-  Directory get entity => _entity as Directory;
-}
-
-enum EntityType { file, directory }
-
 extension EntityInfoHelpers on EntityInfo {
-  FileEntityInfo get asFile => this as FileEntityInfo;
-  DirectoryEntityInfo get asDirectory => this as DirectoryEntityInfo;
-
-  bool get isFile => this is FileEntityInfo;
-  bool get isDirectory => this is DirectoryEntityInfo;
+  bool get isFile => stat.type == EntityType.file || stat.type == EntityType.link;
+  bool get isDirectory => stat.type == EntityType.directory;
 }
 
 extension EntityInfoListHelpers on List<EntityInfo> {
-  List<FileEntityInfo> get files => whereType<FileEntityInfo>().toList();
-  List<DirectoryEntityInfo> get directories => whereType<DirectoryEntityInfo>().toList();
+  List<EntityInfo> get files => where((e) => e.isFile).toList();
+  List<EntityInfo> get directories => where((e) => e.isDirectory).toList();
 }
-
-/* class EntityStat implements Insertable<EntityStat> {
-  final String path;
-  final DateTime changed;
-  final DateTime modified;
-  final DateTime accessed;
-  final FileSystemEntityType type;
-  final int mode;
-  final int size;
-
-  const EntityStat({
-    required this.path,
-    required this.changed,
-    required this.modified,
-    required this.accessed,
-    required this.type,
-    required this.mode,
-    required this.size,
-  });
-
-  EntityStat.fromStat(String path, FileStat stat)
-      : this(
-          path: path,
-          changed: stat.changed,
-          modified: stat.modified,
-          accessed: stat.accessed,
-          type: stat.type,
-          mode: stat.mode,
-          size: stat.size,
-        );
-
-  @override
-  Map<String, Expression> toColumns(bool nullToAbsent) {
-    return FileStatCachesCompanion(
-      path: Value(path),
-      changed: Value(changed),
-      modified: Value(modified),
-      accessed: Value(accessed),
-      type: Value(type),
-      mode: Value(mode),
-      size: Value(size),
-    ).toColumns(nullToAbsent);
-  }
-} */

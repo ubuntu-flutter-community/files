@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:files/backend/entity_info.dart';
 import 'package:files/backend/fetch.dart';
+import 'package:files/backend/fs.dart' as fs;
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +26,6 @@ class WorkspaceController with ChangeNotifier {
   // Loading related
   late String _currentDir;
   List<EntityInfo>? _currentInfo;
-  double? _loadingProgress;
   OSError? _lastError;
 
   // Sort, view and selection
@@ -53,33 +53,25 @@ class WorkspaceController with ChangeNotifier {
     _gridState = const GridViewState(size: 96);
   }
 
-  Future<void> getInfoForDir(Directory dir) async {
+  Future<void> getInfoForDir(fs.File dir) async {
     await _fetcher?.cancel();
     _lastError = null;
+    _fetcher?.cancellable.destroy();
     _fetcher = CancelableFsFetch(
-      directory: dir,
+      source: dir,
       onFetched: (data) {
         _currentInfo = data;
-        notifyListeners();
-      },
-      onProgressChange: (value) {
-        _loadingProgress = value;
         notifyListeners();
       },
       showHidden: _showHidden,
       ascending: _ascending,
       sortType: _sortType,
-      onFileSystemException: (value) {
-        _lastError = value;
-        notifyListeners();
-      },
     );
     await _fetcher!.startFetch();
   }
 
   List<EntityInfo>? get currentInfo =>
       _currentInfo != null ? List.unmodifiable(_currentInfo!) : null;
-  double? get loadingProgress => _loadingProgress;
 
   void clearCurrentInfo() {
     _currentInfo = null;
@@ -161,7 +153,7 @@ class WorkspaceController with ChangeNotifier {
     clearCurrentInfo();
     clearSelectedItems();
     await _directoryStream?.cancel();
-    await getInfoForDir(Directory(newDir));
+    await getInfoForDir(fs.File.fromPath(newDir));
     _directoryStream = Directory(newDir).watch().listen(_directoryStreamListener);
   }
 
@@ -181,7 +173,7 @@ class WorkspaceController with ChangeNotifier {
   bool get canGoToNextHistoryEntry => _historyOffset != 0;
 
   Future<void> _directoryStreamListener(FileSystemEvent event) async {
-    await getInfoForDir(Directory(currentDir));
+    await getInfoForDir(fs.File.fromPath(currentDir));
   }
 
   static WorkspaceController of(BuildContext context, {bool listen = true}) {

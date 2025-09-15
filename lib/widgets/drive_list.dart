@@ -2,16 +2,18 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:files/backend/providers.dart';
+import 'package:files/backend/workspace.dart';
 import 'package:files/widgets/separated_flex.dart';
 import 'package:filesize/filesize.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart' as p;
 import 'package:udisks/udisks.dart';
 import 'package:yaru/yaru.dart';
 
 class DriveList extends StatelessWidget {
-  const DriveList({this.onDriveTap, super.key});
+  const DriveList({required this.workspace, super.key});
 
-  final ValueChanged<String>? onDriveTap;
+  final WorkspaceController workspace;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +29,8 @@ class DriveList extends StatelessWidget {
                     !e.userspaceMountOptions.contains('x-gvfs-hide'),
               )
               .where((e) => !e.hintIgnore && e.filesystem != null)
-              .map((e) => _DriveTile(blockDevice: e, onTap: onDriveTap))
+              .where((e) => driveProvider.supportedFilesystems.contains(e.idType))
+              .map((e) => _DriveTile(blockDevice: e, workspace: workspace))
               .toList(),
         );
       },
@@ -36,9 +39,10 @@ class DriveList extends StatelessWidget {
 }
 
 class _DriveTile extends StatefulWidget {
-  const _DriveTile({required this.blockDevice, this.onTap});
+  const _DriveTile({required this.blockDevice, required this.workspace});
+
   final UDisksBlockDevice blockDevice;
-  final ValueChanged<String>? onTap;
+  final WorkspaceController workspace;
 
   @override
   State<_DriveTile> createState() => _DriveTileState();
@@ -100,6 +104,11 @@ class _DriveTileState extends State<_DriveTile> {
             ? YaruOptionButton(
                 onPressed: () async {
                   await widget.blockDevice.filesystem!.unmount();
+                  if (p.isWithin(mountPoint!, widget.workspace.currentDir) ||
+                      p.equals(mountPoint!, widget.workspace.currentDir)) {
+                    await widget.workspace.changeCurrentDir(folderProvider.destinations.first.path);
+                  }
+
                   setState(() {});
                 },
                 style: OutlinedButton.styleFrom(
@@ -114,7 +123,7 @@ class _DriveTileState extends State<_DriveTile> {
             setState(() {});
           }
 
-          widget.onTap?.call(mountPoint!);
+          await widget.workspace.changeCurrentDir(mountPoint!);
         },
       ),
     );
